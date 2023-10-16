@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 
 const Institute = require('./models/institute.js'); // Import the model
+const user = require('./models/users.js'); // Import the model
 
 // Use the CORS middleware
 app.use(cors());
@@ -99,6 +100,35 @@ app.delete('/institutes/:id', async (req, res) => {
     res.status(500).send({ message: 'Server error' });
   }
 });
+
+app.post("/login", async (req, res) => {
+  try {
+    const { institute_id, password } = req.body;
+
+    if (!institute_id || !password) {
+      return res.status(400).send({ message: 'Both institute_id and password are required.' });
+    }
+
+    const user = await user.findOne({ institute_id });
+    if (!user) {
+      return res.status(401).send({ message: 'Wrong credentials.' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).send({ message: 'Wrong credentials.' });
+    }
+
+    // If login is successful, send a success response. You can also generate a token or set a session here.
+    res.status(200).send({ message: 'Login successful.' });
+
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+
 
 // Start the Express server
 app.listen(port, () => {
