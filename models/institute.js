@@ -8,19 +8,19 @@ const instituteSchema = new mongoose.Schema({
     logo: String,
     address: {
         street: String,
-        house_number: String, // Corrected from house_nnumber to house_number
+        house_number: String,
         landmark: String,
         pincode: Number,
         state: String,
         city: String,
         country: String,
     },
-    active: Boolean, // Changed to Boolean
-    phone_number: Number, // Changed to Number
-    primary_user_email: String,
+    active: Boolean,
+    phone_number: Number,
+    primary_user_email: String
 });
 
 // Create a Mongoose model based on the schema
-const Institute = mongoose.model('Institute', instituteSchema); // Changed 'institutes' to 'Institute'
+const Institute = mongoose.model('institutes', instituteSchema); // Changed 'institutes' to 'Institute'
 
 module.exports = Institute;

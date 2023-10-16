@@ -23,6 +23,7 @@ async function connectToDatabase() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+
     console.log('Connected to MongoDB successfully');
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
@@ -31,6 +32,16 @@ async function connectToDatabase() {
 
 // Call the connectToDatabase function to establish the connection
 connectToDatabase();
+
+app.get('/collections', async (req, res) => {
+  try {
+    const collectionNames = await mongoose.connection.db.listCollections().toArray();
+    res.json(collectionNames.map(collection => collection.name));
+  } catch (err) {
+    console.error('Error fetching collections:', err);
+    res.status(500).send('Server error');
+  }
+});
 
 // Define a route to handle POST requests and store institute data in the database
 app.post('/institute', async (req, res) => {
@@ -69,6 +80,23 @@ app.get('/institutes/:id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching the record:', error);
     res.status(500).send('Error fetching the record');
+  }
+});
+
+app.delete('/institutes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the Institute by id and delete it
+    const result = await Institute.findByIdAndDelete(id);
+
+    if (!result) {
+      return res.status(404).send({ message: 'Institute not found' });
+    }
+
+    res.send({ message: 'Institute deleted successfully!' });
+  } catch (error) {
+    res.status(500).send({ message: 'Server error' });
   }
 });
 
