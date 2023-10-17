@@ -6,6 +6,7 @@ const instituteSchema = new mongoose.Schema({
     name: String,
     website_url: String,
     logo: String,
+    password: String,
     address: {
         street: String,
         house_number: String,
