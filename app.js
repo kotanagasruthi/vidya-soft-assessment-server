@@ -132,7 +132,7 @@ app.post("/login", async (req, res) => {
     }
 
     // If login is successful, send a success response. You can also generate a token or set a session here.
-    res.status(200).send({ message: 'Login successful.' });
+    res.status(200).send({ message: 'Login successful.', user: user });
 
   } catch (error) {
     console.error('Error during login:', error);
