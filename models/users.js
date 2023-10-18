@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-// Create a Mongoose schema
-const userSchema = new mongoose.Schema({
-    institute_id: String,
-    phone_number: Number, // Changed to Number
-    primary_user_email: String,
-    password:String,
+const userSchema = new Schema({
+  user_id: String,
+  institute_id: String,
+  name: String,
+  password: String,
+  role: String
 });
 
-// Create a Mongoose model based on the schema
-const User = mongoose.model('users', userSchema); // Changed 'institutes' to 'Institute'
+const User = mongoose.model('users', userSchema);
 
 module.exports = User;

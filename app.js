@@ -2,11 +2,24 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+
+const userRoutes = require('./routes/users');
+const instituteRoutes = require('./routes/institutes');
+const examRoutes = require('./routes/exams');
+const topicRoutes = require('./routes/topics');
+const questionRoutes = require('./routes/questions');
+
 const app = express();
+
+app.use('/users', userRoutes);
+app.use('/institutes', instituteRoutes);
+app.use('/exams', examRoutes);
+app.use('/topics', topicRoutes);
+app.use('/questions', questionRoutes);
 const port = 3000;
 
-const Institute = require('./models/institute.js'); // Import the model
-const user = require('./models/users.js'); // Import the model
+
+const shortid = require('shortid');
 
 // Use the CORS middleware
 app.use(cors());
@@ -31,7 +44,6 @@ async function connectToDatabase() {
   }
 }
 
-// Call the connectToDatabase function to establish the connection
 connectToDatabase();
 
 app.get('/collections', async (req, res) => {
@@ -44,93 +56,6 @@ app.get('/collections', async (req, res) => {
   }
 });
 
-// Define a route to handle POST requests and store institute data in the database
-app.post('/institute', async (req, res) => {
-  try {
-    const instituteData = req.body;
-    const institute = new Institute(instituteData);
-    await institute.save();
-    res.status(201).send(institute);
-  } catch (error) {
-    res.status(400).send({ error: error.message });
-  }
-});
-
-app.get('/getinstitutes', async (req, res) => {
-  try {
-    const institutes = await Institute.find(); // Fetch all records
-
-    // Send the records as JSON
-    res.json(institutes);
-  } catch (error) {
-    console.error('Error fetching records:', error);
-    res.status(500).send('Error fetching records');
-  }
-});
-
-app.get('/institutes/:id', async (req, res) => {
-  try {
-    const institute = await Institute.findOne({ _id: req.params.id });
-
-    if (!institute) {
-      return res.status(404).json({ message: 'Institute not found' });
-    }
-
-    // Send the found record as JSON
-    res.json(institute);
-  } catch (error) {
-    console.error('Error fetching the record:', error);
-    res.status(500).send('Error fetching the record');
-  }
-});
-
-app.delete('/institutes/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Find the Institute by id and delete it
-    const result = await Institute.findByIdAndDelete(id);
-
-    if (!result) {
-      return res.status(404).send({ message: 'Institute not found' });
-    }
-
-    res.send({ message: 'Institute deleted successfully!' });
-  } catch (error) {
-    res.status(500).send({ message: 'Server error' });
-  }
-});
-
-app.post("/login", async (req, res) => {
-  try {
-    const { institute_id, password } = req.body;
-
-    if (!institute_id || !password) {
-      return res.status(400).send({ message: 'Both institute_id and password are required.' });
-    }
-
-    const user = await user.findOne({ institute_id });
-    if (!user) {
-      return res.status(401).send({ message: 'Wrong credentials.' });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).send({ message: 'Wrong credentials.' });
-    }
-
-    // If login is successful, send a success response. You can also generate a token or set a session here.
-    res.status(200).send({ message: 'Login successful.' });
-
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).send({ message: 'Server error' });
-  }
-});
-
-
-
-// Start the Express server
 app.listen(port, () => {
   console.log(`Express server is running on http://localhost:${port}`);
 });
