@@ -31,17 +31,19 @@ router.post('/setTopic', async (req,res) => {
           }
 })
 
-router.get('/getTopics', async(req,res) => {
-      try {
-            const topics = await Topic.find({ institute_id });
+router.get('/getTopics/:institute_id', async (req, res) => {
+  try {
+    const institute_id = req.params.institute_id;
+    const topics = await Topic.find({ institute_id });
 
-            // Send the records as JSON
-            res.json(topics);
-          } catch (error) {
-            console.error('Error fetching records:', error);
-            res.status(500).send('Error fetching records');
-          }
+    // Send the records as JSON
+    res.json(topics);
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    res.status(500).send('Error fetching records');
+  }
 });
+
 
 router.put('/:topicId', async (req, res) => {
       try {
