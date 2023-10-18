@@ -34,8 +34,6 @@ router.post('/setExam', async (req,res) => {
 router.get('/getExams', async(req,res) => {
       try {
             const exams = await Exam.find(); // Fetch all records
-
-            // Send the records as JSON
             res.json(exams);
           } catch (error) {
             console.error('Error fetching records:', error);
