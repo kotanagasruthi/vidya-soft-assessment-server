@@ -8,6 +8,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 
+
 router.post('/setExam', async (req,res) => {
       try {
             var examData = req.body;
