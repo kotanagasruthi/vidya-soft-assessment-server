@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
+const cors = require('cors');
+router.use(cors());
 
 const User = require('../models/users');
 
@@ -31,8 +33,8 @@ router.post('/login', async (req, res) => {
         if (!user) {
           return res.status(401).send({ message: 'Wrong credentials.' });
         }
-        console.log('password', password)
-        console.log('user password', user.password)
+
+        console.log('user', user)
 
         const isPasswordValid = password === user.password;
         if (!isPasswordValid) {
@@ -40,7 +42,7 @@ router.post('/login', async (req, res) => {
         }
 
         // If login is successful, send a success response. You can also generate a token or set a session here.
-        res.status(200).send({ message: 'Login successful.', user: user });
+        res.status(200).send({ message: 'Login successful.', user: res.json(user) });
 
       } catch (error) {
         console.error('Error during login:', error);
