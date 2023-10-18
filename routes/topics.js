@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 const Topic = require('../models/topics');
 const shortid = require('shortid');
+const cors = require('cors');
+router.use(cors());
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());

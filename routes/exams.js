@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 const Exam = require('../models/exams');
 const shortid = require('shortid');
+const cors = require('cors');
+router.use(cors());
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
@@ -40,4 +42,14 @@ router.get('/getExams', async(req,res) => {
             res.status(500).send('Error fetching records');
           }
 });
+
+router.delete('/deleteAllExams', async (req, res) => {
+      try {
+        await Exam.deleteMany({});
+        res.status(200).send('All exams deleted successfully.');
+      } catch (error) {
+        res.status(500).send('Server error.');
+      }
+    });
+
 module.exports = router;
