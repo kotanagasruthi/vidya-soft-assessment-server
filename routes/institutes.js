@@ -4,6 +4,8 @@ const router = express.Router();
 const Institute = require('../models/institute');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
+const cors = require('cors');
+router.use(cors());
 
 router.post('/setInstitute', async (req, res) => {
       try {
