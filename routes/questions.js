@@ -31,8 +31,22 @@ router.post('/addQuestion', async (req,res) => {
           }
 })
 
+router.get('/getAllQuestions', async(req,res) => {
+  try {
+        const questions = await Question.find();
+
+        // Send the records as JSON
+        res.json(questions);
+      } catch (error) {
+        console.error('Error fetching records:', error);
+        res.status(500).send('Error fetching records');
+      }
+});
+
 router.get('/getQuestions', async(req,res) => {
       try {
+            console.log('topic id', req.query.topic_id)
+            const topic_id = req.query.topic_id
             const questions = await Question.find({ topic_id }); // Fetch all records
 
             // Send the records as JSON

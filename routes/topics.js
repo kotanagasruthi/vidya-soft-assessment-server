@@ -31,9 +31,23 @@ router.post('/setTopic', async (req,res) => {
           }
 })
 
+router.get('/getAllTopics', async(req,res) => {
+  try {
+        const topics = await Topic.find();
+
+        // Send the records as JSON
+        res.json(topics);
+      } catch (error) {
+        console.error('Error fetching records:', error);
+        res.status(500).send('Error fetching records');
+      }
+});
+
 router.get('/getTopics', async(req,res) => {
       try {
-            const topics = await Topic.find({ institute_id });
+        console.log('institute id', req.query.institute_id)
+          const institute_id = req.query.institute_id
+            const topics = await Topic.find({ institute_id});
 
             // Send the records as JSON
             res.json(topics);
@@ -77,5 +91,14 @@ router.put('/:topicId', async (req, res) => {
       } catch (error) {
           res.status(500).json({ message: 'Server error', error: error.message });
       }
+  });
+
+  router.delete('/deleteAllTopics', async (req, res) => {
+    try {
+      await Topic.deleteMany({});
+      res.status(200).send('All Topics deleted successfully.');
+    } catch (error) {
+      res.status(500).send('Server error.');
+    }
   });
 module.exports = router;
