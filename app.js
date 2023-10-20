@@ -8,14 +8,16 @@ const instituteRoutes = require('./routes/institutes');
 const examRoutes = require('./routes/exams');
 const topicRoutes = require('./routes/topics');
 const questionRoutes = require('./routes/questions');
-
+const inviteesRoute = require('./routes/invitees')
 const app = express();
 
+app.use(bodyParser.json()); 
 app.use('/users', userRoutes);
 app.use('/institutes', instituteRoutes);
 app.use('/exams', examRoutes);
 app.use('/topics', topicRoutes);
 app.use('/questions', questionRoutes);
+app.use('/invitees', inviteesRoute);
 const port = 3000;
 
 
@@ -27,6 +29,8 @@ app.use(cors());
 // Middleware to parse incoming form data
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(cors({ origin: 'http://localhost:8080' }));
 
 // Connect to your MongoDB Atlas cluster
 const mongoURI = 'mongodb+srv://hitheshchm:aDpw4bk4cqJ9bzmT@cluster0.ditmjg6.mongodb.net/assesment_platform';

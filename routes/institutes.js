@@ -53,7 +53,8 @@ router.post('/setInstitute', async (req, res) => {
         const institutes = await Institute.find(); // Fetch all records
 
         // Send the records as JSON
-        res.json(institutes);
+        x = res.json(institutes);
+        console.log(x)
       } catch (error) {
         console.error('Error fetching records:', error);
         res.status(500).send('Error fetching records');
