@@ -11,6 +11,7 @@ const instituteRoutes = require('./routes/institutes');
 const examRoutes = require('./routes/exams');
 const topicRoutes = require('./routes/topics');
 const questionRoutes = require('./routes/questions');
+const examFormatRoutes = require('./routes/exam-formats');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/institutes', instituteRoutes);
 app.use('/exams', examRoutes);
 app.use('/topics', topicRoutes);
 app.use('/questions', questionRoutes);
+app.use('/exam-format', examFormatRoutes)
 const port = 3000;
 
 
