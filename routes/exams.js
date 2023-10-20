@@ -32,7 +32,7 @@ router.post('/setExam', async (req,res) => {
           }
 })
 
-router.get('/getExams', async(req,res) => {
+router.get('/getAllExams', async(req,res) => {
       try {
             const exams = await Exam.find(); // Fetch all records
             res.json(exams);
@@ -40,6 +40,19 @@ router.get('/getExams', async(req,res) => {
             console.error('Error fetching records:', error);
             res.status(500).send('Error fetching records');
           }
+});
+
+router.get('/getExams', async(req,res) => {
+  try {
+        const institute_id = req.query.institute_id
+        const topics = await Exam.find({ institute_id});
+
+        const exams = await Exam.find(); // Fetch all records
+        res.json(exams);
+      } catch (error) {
+        console.error('Error fetching records:', error);
+        res.status(500).send('Error fetching records');
+      }
 });
 
 router.delete('/deleteAllExams', async (req, res) => {
