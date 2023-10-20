@@ -41,6 +41,7 @@ router.post('/login', async (req, res) => {
           return res.status(401).send({ message: 'Wrong credentials.' });
         }
 
+        // req.session.userId = user._id;
         // If login is successful, send a success response. You can also generate a token or set a session here.
         res.status(200).send({ message: 'Login successful.', user: res.json(user) });
 

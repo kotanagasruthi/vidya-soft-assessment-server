@@ -3,12 +3,17 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
 const userRoutes = require('./routes/users');
 const instituteRoutes = require('./routes/institutes');
 const examRoutes = require('./routes/exams');
 const topicRoutes = require('./routes/topics');
 const questionRoutes = require('./routes/questions');
 const inviteesRoute = require('./routes/invitees')
+const examFormatRoutes = require('./routes/exam-formats');
+
 const app = express();
 
 app.use(bodyParser.json()); 
@@ -18,6 +23,7 @@ app.use('/exams', examRoutes);
 app.use('/topics', topicRoutes);
 app.use('/questions', questionRoutes);
 app.use('/invitees', inviteesRoute);
+app.use('/exam-format', examFormatRoutes)
 const port = 3000;
 
 
@@ -49,6 +55,15 @@ async function connectToDatabase() {
 }
 
 connectToDatabase();
+
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: true,
+  store: MongoStore.create({
+      client: mongoose.connection.getClient()
+  })
+}));
 
 app.get('/collections', async (req, res) => {
   try {
