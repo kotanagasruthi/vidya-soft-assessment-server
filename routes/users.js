@@ -21,6 +21,37 @@ router.get('/getUsers', async (req, res) => {
       }
     });
 
+  router.post('/addUser', async (req, res) => {
+    try {
+      const { name, user_id, instituteId, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
+
+
+      // Check if the user with the provided institute_id already exists
+      const existingUser = await User.findOne({ instituteId });
+      if (existingUser) {
+        return res.status(400).send({ message: 'User with this institute_id already exists.' });
+      }
+
+      // Create a new User instance
+      const newUser = new User({
+        name,
+        user_id,
+        instituteId,
+        password,
+        role // Make sure to include all required fields here
+      });
+
+      // Save the new user to the database
+      const savedUser = await newUser.save();
+
+      // Send a success response with the saved user information
+      res.status(201).json({ message: 'User added successfully', user: savedUser });
+    } catch (error) {
+      console.error('Error adding a user:', error);
+      res.status(500).send({ message: 'Server error' });
+    }
+  });
+
 router.post('/login', async (req, res) => {
       try {
         const { institute_id, password } = req.body;
@@ -66,5 +97,28 @@ router.post('/login', async (req, res) => {
         res.send({ loggedIn: false });
       }
     });
+    // ... (your existing code)
+
+// Define a route to delete a user by ID
+router.delete('/deleteUser/:_id', async (req, res) => {
+  try {
+    const userId = req.params._id;
+
+    // Use Mongoose to find and remove the user by their ID
+    const deletedUser = await User.findByIdAndRemove(userId);
+
+    if (deletedUser) {
+      res.status(200).json({ message: 'User deleted successfully', user: deletedUser });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting a user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Export the router with the new route handler
+module.exports = router;
 
     module.exports = router;
