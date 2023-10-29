@@ -41,7 +41,8 @@ router.post('/login', async (req, res) => {
           return res.status(401).send({ message: 'Wrong credentials.' });
         }
 
-        // req.session.userId = user._id;
+        req.session.userId = user.user_id;
+        console.log('user id', user.user_id)
         // If login is successful, send a success response. You can also generate a token or set a session here.
         res.status(200).send({ message: 'Login successful.', user: res.json(user) });
 
@@ -50,4 +51,20 @@ router.post('/login', async (req, res) => {
         res.status(500).send({ message: 'Server error' });
       }
     });
+
+    router.post('/logout', (req, res) => {
+      req.session.destroy(); // destroy the session
+      res.send('Logged out');
+    });
+
+    router.get('/session', (req, res) => {
+      console.log('user req session', req.session)
+      if (req.session.userId) {
+        console.log('USER IS LOGGED IN..')
+        res.send({ loggedIn: true, userId: req.session });
+      } else {
+        res.send({ loggedIn: false });
+      }
+    });
+
     module.exports = router;
