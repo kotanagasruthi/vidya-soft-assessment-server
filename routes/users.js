@@ -23,11 +23,13 @@ router.get('/getUsers', async (req, res) => {
 
   router.post('/addUser', async (req, res) => {
     try {
+      console.log('coming to add user request.')
       const { name, user_id, instituteId, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
 
 
       // Check if the user with the provided institute_id already exists
-      const existingUser = await User.findOne({ instituteId });
+      const existingUser = await User.findOne({ user_id });
+      console.log('existing user', existingUser)
       if (existingUser) {
         return res.status(400).send({ message: 'User with this institute_id already exists.' });
       }
@@ -62,20 +64,17 @@ router.post('/login', async (req, res) => {
 
         const user = await User.findOne({ institute_id });
         if (!user) {
-          return res.status(401).send({ message: 'Wrong credentials.' });
+          return res.status(401).send({ message: 'Please Check Your credentials.' });
         }
-
-        console.log('user', user)
 
         const isPasswordValid = password === user.password;
         if (!isPasswordValid) {
-          return res.status(401).send({ message: 'Wrong credentials.' });
+          return res.status(401).send({ message: 'Please Check Your credentials.' });
         }
 
         req.session.userId = user.user_id;
-        console.log('user id', user.user_id)
         // If login is successful, send a success response. You can also generate a token or set a session here.
-        res.status(200).send({ message: 'Login successful.', user: res.json(user) });
+        return res.status(200).send({ message: 'Login successful.', user: user });
 
       } catch (error) {
         console.error('Error during login:', error);
@@ -89,7 +88,7 @@ router.post('/login', async (req, res) => {
     });
 
     router.get('/session', (req, res) => {
-      console.log('user req session', req.session)
+      // console.log('user req session', req.session)
       if (req.session.userId) {
         console.log('USER IS LOGGED IN..')
         res.send({ loggedIn: true, userId: req.session });
@@ -121,4 +120,3 @@ router.delete('/deleteUser/:_id', async (req, res) => {
 // Export the router with the new route handler
 module.exports = router;
 
-    module.exports = router;
