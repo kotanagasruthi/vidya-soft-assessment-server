@@ -23,11 +23,12 @@ router.get('/getUsers', async (req, res) => {
 
   router.post('/addUser', async (req, res) => {
     try {
+      console.log(req.body)
       const { name, user_id, instituteId, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
 
 
       // Check if the user with the provided institute_id already exists
-      const existingUser = await User.findOne({ instituteId });
+      const existingUser = await User.findOne({ user_id });
       if (existingUser) {
         return res.status(400).send({ message: 'User with this institute_id already exists.' });
       }
@@ -75,7 +76,7 @@ router.post('/login', async (req, res) => {
         req.session.userId = user.user_id;
         console.log('user id', user.user_id)
         // If login is successful, send a success response. You can also generate a token or set a session here.
-        res.status(200).send({ message: 'Login successful.', user: res.json(user) });
+        res.status(200).send({ message: 'Login successful.', user:user });
 
       } catch (error) {
         console.error('Error during login:', error);
