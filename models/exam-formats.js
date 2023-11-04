@@ -8,7 +8,8 @@ const questionSchema = new mongoose.Schema({
       options: [String],
       correct_answer: String,
       difficulty_level: String,
-      marks: Number
+      marks: Number,
+      question_marks: Number
 });
 
 const topicSchema = new mongoose.Schema({
@@ -18,6 +19,7 @@ const topicSchema = new mongoose.Schema({
       description: String,
       marks: Number,
       no_of_questions: Number,
+      question_marks: Number,
       questions: [questionSchema]
 });
 
@@ -34,6 +36,7 @@ const examSchema = new mongoose.Schema({
   negativeMarking: Boolean,
   negativeMarksValue: Number,
   duration: Number,
+  totalMarks: Number,
   activePeriod: {
     startDate: Date,
     endDate: Date

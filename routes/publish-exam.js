@@ -13,7 +13,6 @@ router.get('/publish', async (req, res) => {
 
       try {
             const exam_id = req.query.exam_id
-            console.log('exam id', exam_id)
             // Fetch data from the source database
             const exams = await SourceExam.find({ exam_id });
 
@@ -24,12 +23,6 @@ router.get('/publish', async (req, res) => {
                   totalMarks += topic.marks
                   return acc.concat(topic.questions);
               }, []);
-
-            console.log('exams', exams)
-            console.log('topics', topics)
-            console.log('total marks for exam', totalMarks)
-            console.log('questions for exam', questions)
-            console.log('invitees for exam', candidates)
 
             const finalExamRecord = {
                   institute_id: exams[0].institute_id,
@@ -45,7 +38,6 @@ router.get('/publish', async (req, res) => {
                   activePeriod: exams[0].activePeriod,
                   total_marks: totalMarks
             }
-            console.log('final exam record', finalExamRecord)
 
             DestinationSchema.DestinationExam.create(finalExamRecord)
             .then(res => {
@@ -64,7 +56,6 @@ router.get('/publish', async (req, res) => {
                   no_of_questions: topic.no_of_questions
             }));
 
-            console.log('final topics record', destinationTopics)
 
             DestinationSchema.DestinationTopic.insertMany(destinationTopics)
             .then(res => {
@@ -86,7 +77,6 @@ router.get('/publish', async (req, res) => {
                   marks: 4
             }));
 
-            console.log('final topics record', destinationQuestions)
 
             DestinationSchema.DestinationQuestion.insertMany(destinationQuestions)
             .then(res => {
@@ -103,7 +93,6 @@ router.get('/publish', async (req, res) => {
                   exam_id: exam_id
             }));
 
-            console.log('final candidates record', destinationCandidates)
 
             DestinationSchema.DestinationCandidate.insertMany(destinationCandidates)
             .then(res => {

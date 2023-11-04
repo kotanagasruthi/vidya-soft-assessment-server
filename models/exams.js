@@ -39,6 +39,7 @@ const examSchema = new mongoose.Schema({
     topics: [topicSchema],
     negativeMarking: Boolean,
     negativeMarksValue: Number,
+    totalMarks: Number,
     duration: Number,
     activePeriod: {
         startDate: Date,

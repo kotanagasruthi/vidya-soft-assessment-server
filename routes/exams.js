@@ -15,7 +15,6 @@ router.post('/setExam', async (req,res) => {
       try {
             var examData = req.body;
             const uniqueExamID = shortid.generate();
-            console.log('exam data', examData)
             examData = {
               ...examData,
               exam_id: uniqueExamID
