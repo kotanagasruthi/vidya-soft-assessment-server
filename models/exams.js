@@ -25,7 +25,12 @@ const topicSchema = new mongoose.Schema({
 const inviteeSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
-    email: String
+    email: String,
+    examKey: String,
+    invitation: String,
+    status: String,
+    marksScored: Number,
+    timeSpent: Number
 });
 
 const examSchema = new mongoose.Schema({
