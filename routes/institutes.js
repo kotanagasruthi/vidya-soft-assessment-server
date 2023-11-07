@@ -18,10 +18,6 @@ router.post('/setInstitute', async (req, res) => {
         const institute = new Institute(instituteData);
         institute.save().then(result => {
           const uniqueUserID = shortid.generate();
-          console.log('institute ID', uniqueInstituteID)
-          console.log('name', req.body.name)
-          console.log('user_id', uniqueUserID)
-          console.log('password', req.body.password)
 
             const newUser = new User({
               user_id: uniqueUserID,
@@ -54,7 +50,6 @@ router.post('/setInstitute', async (req, res) => {
 
         // Send the records as JSON
         x = res.json(institutes);
-        console.log(x)
       } catch (error) {
         console.error('Error fetching records:', error);
         res.status(500).send('Error fetching records');

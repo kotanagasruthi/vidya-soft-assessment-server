@@ -14,7 +14,6 @@ router.post('/setTopic', async (req,res) => {
       try {
             var topicData = req.body;
             const uniqueTopicID = shortid.generate();
-            console.log('topic data', topicData)
             topicData = {
               ...topicData,
               topic_id: uniqueTopicID
@@ -58,7 +57,6 @@ router.get('/getAllTopics', async(req,res) => {
 
 router.get('/getTopics', async(req,res) => {
       try {
-        console.log('institute id', req.query.institute_id)
           const institute_id = req.query.institute_id
             const topics = await Topic.find({ institute_id});
 

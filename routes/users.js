@@ -23,13 +23,11 @@ router.get('/getUsers', async (req, res) => {
 
   router.post('/addUser', async (req, res) => {
     try {
-      console.log('coming to add user request.')
       const { name, user_id, instituteId, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
 
 
       // Check if the user with the provided institute_id already exists
       const existingUser = await User.findOne({ user_id });
-      console.log('existing user', existingUser)
       if (existingUser) {
         return res.status(400).send({ message: 'User with this institute_id already exists.' });
       }
@@ -88,9 +86,7 @@ router.post('/login', async (req, res) => {
     });
 
     router.get('/session', (req, res) => {
-      // console.log('user req session', req.session)
       if (req.session.userId) {
-        console.log('USER IS LOGGED IN..')
         res.send({ loggedIn: true, userId: req.session });
       } else {
         res.send({ loggedIn: false });

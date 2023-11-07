@@ -14,7 +14,6 @@ router.post('/addQuestion', async (req,res) => {
       try {
             var questionData = req.body;
             const uniqueQuestionID = shortid.generate();
-            console.log('question data', questionData)
             questionData = {
               ...questionData,
               question_id: uniqueQuestionID
@@ -45,7 +44,6 @@ router.get('/getAllQuestions', async(req,res) => {
 
 router.get('/getQuestions', async(req,res) => {
       try {
-            console.log('topic id', req.query.topic_id)
             const topic_id = req.query.topic_id
             const questions = await Question.find({ topic_id }); // Fetch all records
 

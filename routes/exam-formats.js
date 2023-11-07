@@ -14,9 +14,16 @@ router.post('/addExamFormat', async (req,res) => {
       try {
             var examFormatData = req.body;
             const uniqueExamFormatID = shortid.generate();
-            console.log('exam format data', examFormatData)
+
+            let totalMarks = 0;
+
+            examFormatData.topics.forEach(function(topic, index) {
+              totalMarks += topic.marks
+            });
+
             examFormatData = {
               ...examFormatData,
+              totalMarks: totalMarks,
               examFormatId: uniqueExamFormatID
             }
             const examFormat = new ExamFormat(examFormatData);
@@ -45,7 +52,6 @@ router.get('/getAllExamFormats', async(req,res) => {
 
 router.get('/getExamFormat', async(req,res) => {
       try {
-            console.log('exam format id', req.query.examFormatId)
             const examFormatId = req.query.examFormatId
             const examFormat = await ExamFormat.find({ examFormatId }); // Fetch all records
 
