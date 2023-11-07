@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const router = express.Router();
 const Institute = require('../models/institute');
+const User = require('../models/users')
+const shortid = require('shortid');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 const cors = require('cors');
@@ -44,6 +46,31 @@ router.post('/setInstitute', async (req, res) => {
       }
     });
 
+    router.delete('/deleteInstitutes/:id', async (req, res) => {
+      try {
+        const instituteId = req.params.id;
+    
+        // First, check if the institute with the provided ID exists
+        const institute = await Institute.findOne({ institute_id: instituteId });
+    
+        if (!institute) {
+          return res.status(404).json({ message: 'Institute not found' });
+        }
+    
+        // If the institute exists, you can delete it
+        await Institute.deleteOne({ institute_id: instituteId });
+    
+        // Optionally, you can also delete associated user records if needed
+        // For example, if you want to delete users associated with this institute
+        await User.deleteMany({ institute_id: instituteId });
+    
+        res.status(200).json({ message: 'Institute deleted successfully' });
+      } catch (error) {
+        console.error('Error deleting institute:', error);
+        res.status(500).send('Error deleting institute');
+      }
+    });
+    
     router.get('/getInstitutes', async (req, res) => {
       try {
         const institutes = await Institute.find(); // Fetch all records
@@ -70,4 +97,19 @@ router.post('/setInstitute', async (req, res) => {
         res.status(500).send('Error fetching the record');
       }
     });
+    
+    router.delete('/deleteInstitutes', async (req, res) => {
+      try {
+        // Delete all institute records
+        const deleteResult = await Institute.deleteMany({});
+    
+        res.status(200).json({ message: 'All institutes deleted successfully' });
+      } catch (error) {
+        console.error('Error deleting all institutes:', error);
+        res.status(500).send('Error deleting all institutes');
+      }
+    });
+    
+    
+    
     module.exports = router;
