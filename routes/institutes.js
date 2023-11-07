@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const shortid = require('shortid');
 const router = express.Router();
 const Institute = require('../models/institute');
+const User = require('../models/users');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 const cors = require('cors');
@@ -22,6 +24,7 @@ router.post('/setInstitute', async (req, res) => {
             const newUser = new User({
               user_id: uniqueUserID,
               name: req.body.name,
+              email: req.body.email,
               password: req.body.password, // Remember: Hash and salt this in a real-world scenario
               role: 'admin',
               institute_id: uniqueInstituteID // Example ObjectId; you would typically get this from somewhere

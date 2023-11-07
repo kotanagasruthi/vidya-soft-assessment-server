@@ -18,7 +18,7 @@ const instituteSchema = new mongoose.Schema({
     },
     active: Boolean,
     phone_number: Number,
-    primary_user_email: String
+    email: String
 });
 
 // Create a Mongoose model based on the schema

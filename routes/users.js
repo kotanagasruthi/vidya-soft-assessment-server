@@ -23,7 +23,7 @@ router.get('/getUsers', async (req, res) => {
 
   router.post('/addUser', async (req, res) => {
     try {
-      const { name, user_id, instituteId, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
+      const { name, email, instituteId, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
 
 
       // Check if the user with the provided institute_id already exists
@@ -33,9 +33,11 @@ router.get('/getUsers', async (req, res) => {
       }
 
       // Create a new User instance
+      const uniqueUserID = shortid.generate();
       const newUser = new User({
         name,
-        user_id,
+        user_id: uniqueUserID,
+        email,
         instituteId,
         password,
         role // Make sure to include all required fields here
