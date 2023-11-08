@@ -9,10 +9,10 @@ router.use(cors());
 
 const User = require('../models/users');
 
-router.get('/getUsers/:institute_id', async (req, res) => {
+router.get('/getUsers', async (req, res) => {
       try {
         const instituteId = req.params.institute_id;
-        const users = await User.find({ institute_id: instituteId }); 
+        const users = await User.find();
 
         // Send the records as JSON
         res.json(users);
@@ -24,7 +24,7 @@ router.get('/getUsers/:institute_id', async (req, res) => {
 
   router.post('/addUser', async (req, res) => {
     try {
-      const { name, email, instituteId, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
+      const { name, email, instituteId, instituteName, password, role } = req.body; // Make sure to adjust 'otherFields' according to your User model
 
 
       // Check if the user with the provided institute_id already exists
@@ -40,6 +40,7 @@ router.get('/getUsers/:institute_id', async (req, res) => {
         user_id: uniqueUserID,
         email,
         institute_id: instituteId,
+        institute_name: instituteName,
         password,
         role // Make sure to include all required fields here
       });
@@ -113,6 +114,18 @@ router.delete('/deleteUser/:_id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting a user:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.delete('/deleteUsers', async (req, res) => {
+  try {
+    // Delete all institute records
+    const deleteResult = await User.deleteMany({});
+
+    res.status(200).json({ message: 'All users deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting all Users:', error);
+    res.status(500).send('Error deleting all Users');
   }
 });
 
