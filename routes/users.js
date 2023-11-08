@@ -9,9 +9,10 @@ router.use(cors());
 
 const User = require('../models/users');
 
-router.get('/getUsers', async (req, res) => {
+router.get('/getUsers/:institute_id', async (req, res) => {
       try {
-        const users = await User.find(); // Fetch all records
+        const instituteId = req.params.institute_id;
+        const users = await User.find({ institute_id: instituteId }); 
 
         // Send the records as JSON
         res.json(users);
@@ -38,7 +39,7 @@ router.get('/getUsers', async (req, res) => {
         name,
         user_id: uniqueUserID,
         email,
-        instituteId,
+        institute_id: instituteId,
         password,
         role // Make sure to include all required fields here
       });
@@ -56,13 +57,13 @@ router.get('/getUsers', async (req, res) => {
 
 router.post('/login', async (req, res) => {
       try {
-        const { institute_id, password } = req.body;
+        const { instituteID, email, password } = req.body;
 
-        if (!institute_id || !password) {
+        if (!instituteID || !password || !email) {
           return res.status(400).send({ message: 'Both institute_id and password are required.' });
         }
 
-        const user = await User.findOne({ institute_id });
+        const user = await User.findOne({ institute_id:instituteID , email, password});
         if (!user) {
           return res.status(401).send({ message: 'Please Check Your credentials.' });
         }

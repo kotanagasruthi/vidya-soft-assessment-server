@@ -5,7 +5,7 @@ const userSchema = new Schema({
   name: String,
   email: String,
   user_id:String,
-  instituteId: String,
+  institute_id: String,
   password: String,
   role:String
 });
