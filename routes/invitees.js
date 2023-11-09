@@ -7,13 +7,14 @@ router.use(cors());
 
 // Add a new invitee
 router.post('/add', async (req, res) => {
-  const { firstName, lastName, email } = req.body;
+  const { firstName, lastName, email, instituteId } = req.body;
 
   try {
     const newInvitee = new Invitee({
       firstName,
       lastName,
       email,
+      institute_id: instituteId
     });
 
     const invitee = await newInvitee.save();
@@ -24,7 +25,7 @@ router.post('/add', async (req, res) => {
 });
 
 //fetch all users
-router.get('/users', async (req, res) => {
+router.get('/users/:institute_id', async (req, res) => {
     try {
       const institute_id = req.params.institute_id;
       const users = await Invitee.find({institute_id});

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const router = express.Router();
+const shortid = require('shortid');
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
@@ -9,10 +10,22 @@ router.use(cors());
 
 const User = require('../models/users');
 
-router.get('/getUsers', async (req, res) => {
+router.get('/getUsers/:institute_id', async (req, res) => {
       try {
         const institute_id = req.params.institute_id;
         const users = await User.find({institute_id});
+
+        // Send the records as JSON
+        res.json(users);
+      } catch (error) {
+        console.error('Error fetching records:', error);
+        res.status(500).send('Error fetching records');
+      }
+    });
+
+    router.get('/getAllUsers', async (req, res) => {
+      try {
+        const users = await User.find();
 
         // Send the records as JSON
         res.json(users);
@@ -28,7 +41,7 @@ router.get('/getUsers', async (req, res) => {
 
 
       // Check if the user with the provided institute_id already exists
-      const existingUser = await User.findOne({ user_id });
+      const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).send({ message: 'User with this institute_id already exists.' });
       }

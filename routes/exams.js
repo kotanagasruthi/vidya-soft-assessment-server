@@ -22,7 +22,7 @@ router.post('/setExam', async (req,res) => {
             }
             const exam = new Exam(examData);
             await exam.save()
-            res.status(201).json({
+            res.status(200).json({
                   success: true,
                   message: 'Exam is set successfully',
             });
@@ -92,5 +92,23 @@ router.delete('/deleteAllExams', async (req, res) => {
         res.status(500).send('Server error.');
       }
     });
+
+router.put('/updateExam/:exam_id', async (req, res) => {
+      try {
+        const exam_id = req.params.exam_id;
+        const updatedExam = await Exam.findOneAndUpdate(
+          { exam_id },
+          { is_active: true },
+          { new: true } // Returns the updated document
+        );
+        if (updatedExam) {
+          res.json({ success: true, message: 'Exam Updates Successfully!!!' });
+        } else {
+            res.status(404).json({ success: false, message: 'Exam not found' });
+        }
+      } catch (error) {
+        res.status(500).send('Server error.');
+      }
+});
 
 module.exports = router;

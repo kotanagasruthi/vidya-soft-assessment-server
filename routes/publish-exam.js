@@ -8,6 +8,10 @@ const SourceQuestion = require('../models/questions');
 const SourceUsers = require('../models/users');
 const DestinationSchema = require('../models/publish-exams');
 const nodemailer = require('nodemailer');
+const cors = require('cors');
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
+router.use(cors());
 
 router.get('/publish', async (req, res) => {
 
@@ -18,9 +22,7 @@ router.get('/publish', async (req, res) => {
 
             let candidates = exams[0].invitees;
             let topics = exams[0].topics;
-            let totalMarks = 0;
             let questions = topics.reduce((acc, topic) => {
-                  totalMarks += topic.marks
                   return acc.concat(topic.questions);
               }, []);
 
@@ -36,7 +38,7 @@ router.get('/publish', async (req, res) => {
                   negativeMarksValue: exams[0].negativeMarksValue,
                   duration: exams[0].duration,
                   activePeriod: exams[0].activePeriod,
-                  total_marks: totalMarks
+                  total_marks: exams[0].totalMarks
             }
 
             DestinationSchema.DestinationExam.create(finalExamRecord)
@@ -102,6 +104,9 @@ router.get('/publish', async (req, res) => {
                   console.error("Error inserting:", err);
             });
 
+            let emails = destinationCandidates.map(candidate => candidate.email);
+            let emailString = emails.join(', ');
+
             const examUrl = `https://your-exam-platform.com/exams/${exam_id}`;
 
             let transporter = nodemailer.createTransport({
@@ -114,7 +119,7 @@ router.get('/publish', async (req, res) => {
 
                 let mailOptions = {
                   from: 'nagasruthikota@gmail.com',
-                  to: 'hithesh@vidhyasoft.com, gowtham@vidhyasoft.com',
+                  to: emailString,
                   subject: 'Your Exam Link',
                   text: `Here's your unique exam link: ${examUrl}`
                 };
@@ -127,8 +132,17 @@ router.get('/publish', async (req, res) => {
                   }
                 });
 
+            const updatedExam = await SourceExam.findOneAndUpdate(
+                  { exam_id },
+                  { is_active: true },
+                  { new: true } // Returns the updated document
+                );
 
-            console.log("Data populated successfully!");
+            if (updatedExam) {
+                  res.json({ success: true, message: 'Exam Published Successfully!!!' });
+              } else {
+                  res.status(404).json({ success: false, message: 'Exam not found' });
+              }
 
             } catch (error) {
                   console.error("Error populating data:", error);
