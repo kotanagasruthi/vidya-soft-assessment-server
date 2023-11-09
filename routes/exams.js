@@ -77,9 +77,7 @@ router.get('/getAllExams', async(req,res) => {
 router.get('/getExams', async(req,res) => {
   try {
         const institute_id = req.query.institute_id
-        const topics = await Exam.find({ institute_id});
-
-        const exams = await Exam.find(); // Fetch all records
+        const exams = await Exam.find({ institute_id});
         res.json(exams);
       } catch (error) {
         res.status(500).send('Error fetching records');

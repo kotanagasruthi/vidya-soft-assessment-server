@@ -26,7 +26,8 @@ router.post('/add', async (req, res) => {
 //fetch all users
 router.get('/users', async (req, res) => {
     try {
-      const users = await Invitee.find({});
+      const institute_id = req.params.institute_id;
+      const users = await Invitee.find({institute_id});
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: 'Unable to fetch users' });
@@ -46,6 +47,18 @@ router.delete('/delete/:email', async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({ error: 'Unable to delete invitee' });
+  }
+});
+
+router.delete('/deleteInvitees', async (req, res) => {
+  try {
+    // Delete all institute records
+    const deleteResult = await Invitee.deleteMany({});
+
+    res.status(200).json({ message: 'All invitees deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting all invitees:', error);
+    res.status(500).send('Error deleting all invitees');
   }
 });
 

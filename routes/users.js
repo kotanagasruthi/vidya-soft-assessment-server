@@ -11,8 +11,8 @@ const User = require('../models/users');
 
 router.get('/getUsers', async (req, res) => {
       try {
-        const instituteId = req.params.institute_id;
-        const users = await User.find();
+        const institute_id = req.params.institute_id;
+        const users = await User.find({institute_id});
 
         // Send the records as JSON
         res.json(users);
