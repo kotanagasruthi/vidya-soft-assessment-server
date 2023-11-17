@@ -13,7 +13,6 @@ const questionSchema = new mongoose.Schema({
 });
 
 const topicSchema = new mongoose.Schema({
-      institute_id: String,
       topic_id: String,
       topic_name: String,
       description: String,
@@ -30,21 +29,20 @@ const inviteeSchema = new mongoose.Schema({
 });
 
 const examSchema = new mongoose.Schema({
-      instituteId: String,
-      examFormatId: String,
-      examType: String,
-      topics: [topicSchema],
-      negativeMarking: Boolean,
-      negativeMarksValue: Number,
-      duration: Number,
-      totalMarks: Number,
-      activePeriod: {
-      startDate: Date,
-      endDate: Date
-      },
-      invitees: [inviteeSchema]
+  examFormatId: String,
+  examType: String,
+  topics: [topicSchema],
+  negativeMarking: Boolean,
+  negativeMarksValue: Number,
+  duration: Number,
+  totalMarks: Number,
+  activePeriod: {
+    startDate: Date,
+    endDate: Date
+  },
+  invitees: [inviteeSchema]
 });
 
-const ExamFormat = mongoose.model('exam_formats', examSchema);
+const CommonExamFormat = mongoose.model('common_exam_formats', examSchema);
 
-module.exports = ExamFormat;
+module.exports = CommonExamFormat;
