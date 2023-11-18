@@ -44,8 +44,8 @@ router.get('/getAllQuestions', async(req,res) => {
 
 router.get('/getQuestions', async(req,res) => {
       try {
-            const topic_id = req.query.topic_id
-            const questions = await Question.find({ topic_id }); // Fetch all records
+            const topic_name = req.query.topic_name
+            const questions = await Question.find({ topic_name }); // Fetch all records
 
             // Send the records as JSON
             res.json(questions);

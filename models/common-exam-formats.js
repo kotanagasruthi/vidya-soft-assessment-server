@@ -13,7 +13,6 @@ const questionSchema = new mongoose.Schema({
 });
 
 const topicSchema = new mongoose.Schema({
-      topic_id: String,
       topic_name: String,
       description: String,
       marks: Number,
@@ -40,6 +39,7 @@ const examSchema = new mongoose.Schema({
     startDate: Date,
     endDate: Date
   },
+  commonFormat: Boolean,
   invitees: [inviteeSchema]
 });
 

@@ -33,6 +33,7 @@ const topicRoutes = require('./routes/topics');
 const questionRoutes = require('./routes/questions');
 const inviteesRoute = require('./routes/invitees')
 const examFormatRoutes = require('./routes/exam-formats');
+const commonExamFormatRoutes = require('./routes/common-exam-formats');
 const publishExamRoutes = require('./routes/publish-exam');
 
 app.use(bodyParser.json());
@@ -42,7 +43,8 @@ app.use('/exams', examRoutes);
 app.use('/topics', topicRoutes);
 app.use('/questions', questionRoutes);
 app.use('/invitees', inviteesRoute);
-app.use('/exam-format', examFormatRoutes)
+app.use('/exam-format', examFormatRoutes);
+app.use('/common-exam-formats', commonExamFormatRoutes)
 app.use('/publish-exam', publishExamRoutes)
 const port = 3000;
 

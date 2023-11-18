@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const destinationQuestionSchema = new mongoose.Schema({
       exam_id: String,
-      topic_id: String,
+      topic_name: String,
       question_id: String,
       question_text: String,
       question_type: String,

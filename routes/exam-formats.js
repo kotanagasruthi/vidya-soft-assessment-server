@@ -72,26 +72,31 @@ router.get('/getAllExamFormats', async (req, res) => {
   try {
     const instituteId = req.query.instituteId;
 
-    // Fetch common exam formats
     const commonExamFormats = await getCommonExamFormats();
     console.log('common exam formats', commonExamFormats)
 
-    // Fetch institute-specific exam formats
     const examFormats = await ExamFormat.find({ instituteId });
 
     console.log('exam formats', examFormats)
 
-    // Extract examIds from common exam formats
     const commonExamIds = commonExamFormats.map(format => format.examId);
 
-    // Filter institute-specific exam formats to exclude those present in common exam formats
     const filteredCommonExamFormats = commonExamFormats.filter(format => !examFormats.includes(format.examId));
 
-    // Combine common and filtered institute-specific exam formats
     const combinedExamFormats = [...filteredCommonExamFormats, ...examFormats];
 
-    // Send the combined records as JSON
     res.json(combinedExamFormats);
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    res.status(500).send('Error fetching records');
+  }
+});
+
+router.get('/getAllInstituteExamFormats', async (req, res) => {
+  try {
+    const instituteId = req.query.instituteId;
+    const examFormats = await ExamFormat.find({ instituteId });
+    res.json(examFormats);
   } catch (error) {
     console.error('Error fetching records:', error);
     res.status(500).send('Error fetching records');

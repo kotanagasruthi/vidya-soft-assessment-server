@@ -51,7 +51,6 @@ router.get('/publish', async (req, res) => {
 
             const destinationTopics = topics.map(topic => ({
                   exam_id: exam_id,
-                  topic_id: topic.topic_id,
                   topic_name: topic.topic_name,
                   description: topic.description,
                   marks: topic.marks,
@@ -68,7 +67,7 @@ router.get('/publish', async (req, res) => {
             });
 
             const destinationQuestions = questions.map(question => ({
-                  topic_id: question.topic_id,
+                  topic_name: question.topic_name,
                   question_id: question.question_id,
                   question_text: question.question_text,
                   question_type: question.question_type,

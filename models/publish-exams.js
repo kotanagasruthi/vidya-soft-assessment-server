@@ -35,7 +35,6 @@ const DestinationExam = destinationConnection.model('Exam', destinationExamSchem
 // Topics Model
 const destinationTopicSchema = new mongoose.Schema({
       exam_id: String,
-      topic_id: String,
       topic_name: String,
       description: String,
       marks: Number,
@@ -47,7 +46,7 @@ const DestinationTopic = destinationConnection.model('Topic', destinationTopicSc
 // Question Model
 const destinationQuestionSchema = new mongoose.Schema({
       exam_id: String,
-      topic_id: String,
+      topic_name: String,
       question_id: String,
       question_text: String,
       question_type: String,

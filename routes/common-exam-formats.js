@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 const router = express.Router();
-const ExamFormat = require('../models/exam-formats');
+const CommonExamFormat = require('../models/common-exam-formats');
 const shortid = require('shortid');
 const cors = require('cors');
 router.use(cors());
@@ -26,7 +26,7 @@ router.post('/addExamFormat', async (req,res) => {
               totalMarks: totalMarks,
               examFormatId: uniqueExamFormatID
             }
-            const examFormat = new ExamFormat(examFormatData);
+            const examFormat = new CommonExamFormat(examFormatData);
             await examFormat.save()
             res.status(201).json({
                   success: true,
@@ -40,7 +40,7 @@ router.post('/addExamFormat', async (req,res) => {
 
 router.get('/getAllCommonExamFormats', async(req,res) => {
   try {
-        const examFormats = await ExamFormat.find();
+        const examFormats = await CommonExamFormat.find();
 
         // Send the records as JSON
         res.json(examFormats);
@@ -50,10 +50,21 @@ router.get('/getAllCommonExamFormats', async(req,res) => {
       }
 });
 
+router.put('/updateManyExamFormats', async(req,res) => {
+  try {
+    // Update all documents in the collection
+    const result = await CommonExamFormat.updateMany({}, { $set: { commonFormat: true } });
+
+    console.log(`${result.nModified} documents updated`);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 router.get('/getExamFormat', async(req,res) => {
       try {
             const examFormatId = req.query.examFormatId
-            const examFormat = await ExamFormat.find({ examFormatId }); // Fetch all records
+            const examFormat = await CommonExamFormat.find({ examFormatId }); // Fetch all records
 
             // Send the records as JSON
             res.json(examFormat);
@@ -65,7 +76,7 @@ router.get('/getExamFormat', async(req,res) => {
 
 router.delete('/deleteAllFormats', async (req, res) => {
       try {
-        await ExamFormat.deleteMany({});
+        await CommonExamFormat.deleteMany({});
         res.status(200).send('All exam formats deleted successfully.');
       } catch (error) {
         res.status(500).send('Server error.');

@@ -13,11 +13,11 @@ router.use(bodyParser.json());
 router.post('/setTopic', async (req,res) => {
       try {
             var topicData = req.body;
-            const uniqueTopicID = shortid.generate();
-            topicData = {
-              ...topicData,
-              topic_id: uniqueTopicID
-            }
+            // const uniqueTopicID = shortid.generate();
+            // topicData = {
+            //   ...topicData,
+            //   topic_id: uniqueTopicID
+            // }
             const topic = new Topic(topicData);
             await topic.save()
             res.status(201).json({

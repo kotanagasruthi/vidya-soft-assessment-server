@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 const TopicSchema = new Schema({
     institute_id: String,
-    topic_id: String,
     topic_name: String,
     description: String
 });

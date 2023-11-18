@@ -14,7 +14,6 @@ const questionSchema = new mongoose.Schema({
 
 const topicSchema = new mongoose.Schema({
       institute_id: String,
-      topic_id: String,
       topic_name: String,
       description: String,
       marks: Number,
