@@ -83,9 +83,9 @@ router.get('/getAllExamFormats', async (req, res) => {
 
     const filteredCommonExamFormats = commonExamFormats.filter(format => !examFormats.includes(format.examId));
 
-    const combinedExamFormats = [...filteredCommonExamFormats, ...examFormats];
+    // const combinedExamFormats = [...filteredCommonExamFormats, ...examFormats];
 
-    res.json(combinedExamFormats);
+    res.json(filteredCommonExamFormats);
   } catch (error) {
     console.error('Error fetching records:', error);
     res.status(500).send('Error fetching records');
