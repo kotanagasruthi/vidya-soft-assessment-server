@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const questionSchema = new mongoose.Schema({
+const commonQuestionSchema = new mongoose.Schema({
       topic_name: String,
       question_id: String,
       question_text: String,
@@ -12,25 +12,25 @@ const questionSchema = new mongoose.Schema({
       question_marks: Number
 });
 
-const topicSchema = new mongoose.Schema({
+const commonTopicSchema = new mongoose.Schema({
       topic_name: String,
       description: String,
       marks: Number,
       no_of_questions: Number,
       question_marks: Number,
-      questions: [questionSchema]
+      questions: [commonQuestionSchema]
 });
 
-const inviteeSchema = new mongoose.Schema({
+const commonInviteeSchema = new mongoose.Schema({
       firstName: String,
       lastName: String,
       email: String
 });
 
-const examSchema = new mongoose.Schema({
+const commonExamSchema = new mongoose.Schema({
   examFormatId: String,
   examType: String,
-  topics: [topicSchema],
+  topics: [commonTopicSchema],
   negativeMarking: Boolean,
   negativeMarksValue: Number,
   duration: Number,
@@ -40,9 +40,9 @@ const examSchema = new mongoose.Schema({
     endDate: Date
   },
   commonFormat: Boolean,
-  invitees: [inviteeSchema]
+  invitees: [commonInviteeSchema]
 });
 
-const CommonExamFormat = mongoose.model('common_exam_formats', examSchema);
+const CommonExamFormat = mongoose.model('common_exam_formats', commonExamSchema);
 
 module.exports = CommonExamFormat;

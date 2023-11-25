@@ -35,6 +35,8 @@ const inviteesRoute = require('./routes/invitees')
 const examFormatRoutes = require('./routes/exam-formats');
 const commonExamFormatRoutes = require('./routes/common-exam-formats');
 const publishExamRoutes = require('./routes/publish-exam');
+const vidhyaSoftTopicRoutes = require('./routes/vidhya-soft-topics');
+const vidhyaSoftQuestionsRoutes = require('./routes/vidhya-soft-questions');
 
 app.use(bodyParser.json());
 app.use('/users', userRoutes);
@@ -44,8 +46,11 @@ app.use('/topics', topicRoutes);
 app.use('/questions', questionRoutes);
 app.use('/invitees', inviteesRoute);
 app.use('/exam-format', examFormatRoutes);
-app.use('/common-exam-formats', commonExamFormatRoutes)
-app.use('/publish-exam', publishExamRoutes)
+app.use('/common-exam-formats', commonExamFormatRoutes);
+app.use('/publish-exam', publishExamRoutes);
+app.use('/vidhyasofttopics', vidhyaSoftTopicRoutes);
+app.use('/vidhyasoftquestions', vidhyaSoftQuestionsRoutes);
+
 const port = 3000;
 
 
@@ -63,10 +68,19 @@ app.use(cors({ origin: 'http://localhost:8080' }));
 // Connect to your MongoDB Atlas cluster
 const mongoURI = 'mongodb+srv://hitheshchm:aDpw4bk4cqJ9bzmT@cluster0.ditmjg6.mongodb.net/assesment_platform';
 const mongoURI2 = 'mongodb+srv://hitheshchm:aDpw4bk4cqJ9bzmT@cluster0.ditmjg6.mongodb.net/exam_platform';
+const mongoURI3 = 'mongodb+srv://hitheshchm:aDpw4bk4cqJ9bzmT@cluster0.ditmjg6.mongodb.net/vidhya_soft_db';
+
+let connection1;
+let connection3;
 
 async function connectToDatabase() {
   try {
-    await mongoose.connect(mongoURI, {
+    connection1 = await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    connection3 = await mongoose.createConnection(mongoURI3, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -80,6 +94,7 @@ async function connectToDatabase() {
     // module.exports = {
     //   connection2
     // };
+    return { connection1, connection3 };
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
   }
@@ -196,6 +211,7 @@ app.delete('/deleteDestinationCandidates', async (req, res) => {
     res.status(500).send('Error fetching records');
   }
 });
+
 
 
 app.listen(port, () => {
