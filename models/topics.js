@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const TopicSchema = new Schema({
+const subTopicSchema = new mongoose.Schema({
+    subtopic_name:String,
+    subtopic_discription:String
+});
+
+const TopicSchema = new mongoose.Schema({
     institute_id: String,
     topic_name: String,
-    description: String
+    description: String,
+    sub_topics: [subTopicSchema]
 });
 
 const Topic = mongoose.model('topics', TopicSchema);

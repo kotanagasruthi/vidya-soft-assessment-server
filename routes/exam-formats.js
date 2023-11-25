@@ -10,15 +10,15 @@ router.use(cors());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.get('/copyExamFormats', async (req,res) => {
-  ExamFormat.find().then(docs => {
-      return CommonExamFormat.insertMany(docs.map(doc => doc.toObject()));
-  }).then(() => {
-      console.log('Data copied successfully');
-  }).catch(err => {
-      console.error('Error copying data:', err);
-  });
-})
+// router.get('/copyExamFormats', async (req,res) => {
+//   ExamFormat.find().then(docs => {
+//       return CommonExamFormat.insertMany(docs.map(doc => doc.toObject()));
+//   }).then(() => {
+//       console.log('Data copied successfully');
+//   }).catch(err => {
+//       console.error('Error copying data:', err);
+//   });
+// })
 
 router.post('/addExamFormat', async (req,res) => {
       try {
@@ -53,7 +53,6 @@ async function getCommonExamFormats() {
   try {
     return await CommonExamFormat.find(); // Adjust the query if needed
   } catch (error) {
-    console.error('Error fetching common exam formats:', error);
     throw error; // Propagate the error
   }
 }
@@ -73,24 +72,43 @@ router.get('/getAllExamFormats', async (req, res) => {
     const instituteId = req.query.instituteId;
 
     const commonExamFormats = await getCommonExamFormats();
-    console.log('common exam formats', commonExamFormats)
 
     const examFormats = await ExamFormat.find({ instituteId });
 
-    console.log('exam formats', examFormats)
+    const commonExamIds = commonExamFormats.map(format => format.examFormatId);
 
-    const commonExamIds = commonExamFormats.map(format => format.examId);
-
-    const filteredCommonExamFormats = commonExamFormats.filter(format => !examFormats.includes(format.examId));
+    const filteredCommonExamFormats = commonExamFormats.filter(format => !examFormats.includes(format.examFormatId));
 
     // const combinedExamFormats = [...filteredCommonExamFormats, ...examFormats];
 
     res.json(filteredCommonExamFormats);
   } catch (error) {
-    console.error('Error fetching records:', error);
     res.status(500).send('Error fetching records');
   }
 });
+
+router.post('/importExamFormats', async (req, res) => {
+  try {
+    const { examFormatIds, instituteId } = req.body;
+
+    // Fetch the exam formats from common-exam-formats
+    const commonExamFormats = await CommonExamFormat.find({
+      examFormatId: { $in: examFormatIds.map(id => id.toString()) }
+    });
+
+    // Prepare the data for exam-formats
+    const examFormatsToInsert = commonExamFormats.map(format => {
+        return { ...format.toObject(), instituteId: instituteId };
+    });
+
+    // Insert the data into exam-formats
+    await ExamFormat.insertMany(examFormatsToInsert);
+
+    res.status(200).json({ message: 'Exam formats copied successfully' });
+  } catch (error) {
+      res.status(500).json({ message: 'Error in copying exam formats', error: error });
+  }
+})
 
 router.get('/getAllInstituteExamFormats', async (req, res) => {
   try {
@@ -98,7 +116,6 @@ router.get('/getAllInstituteExamFormats', async (req, res) => {
     const examFormats = await ExamFormat.find({ instituteId });
     res.json(examFormats);
   } catch (error) {
-    console.error('Error fetching records:', error);
     res.status(500).send('Error fetching records');
   }
 });

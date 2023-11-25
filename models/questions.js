@@ -8,7 +8,8 @@ const questionSchema = new Schema({
   question_type: String, //enum: ['multipleChoice', 'trueFalse', 'shortAnswer', 'essay', 'matching', 'fillInTheBlanks'],
   options: [String],
   correct_answer: String,
-  difficulty_level: String
+  difficulty_level: String,
+  tags: [String]
 });
 
 const Question = mongoose.model('questions', questionSchema);

@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const questionSchema = new mongoose.Schema({
     topic_name: String,
+    subtopic_name: String,
     question_id: String,
     question_text: String,
     question_type: String,
@@ -12,13 +13,19 @@ const questionSchema = new mongoose.Schema({
     marks: Number
 });
 
+const subTopicSchema = new mongoose.Schema({
+    subtopic_name: String,
+    subtopic_discription: String,
+    questions: [questionSchema]
+});
+
 const topicSchema = new mongoose.Schema({
     institute_id: String,
     topic_name: String,
     description: String,
     marks: Number,
     no_of_questions: Number,
-    questions: [questionSchema]
+    sub_topics: [subTopicSchema]
 });
 
 const inviteeSchema = new mongoose.Schema({
