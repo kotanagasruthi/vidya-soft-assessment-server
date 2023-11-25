@@ -11,23 +11,18 @@ router.use(bodyParser.json());
 
 
 router.post('/setTopic', async (req,res) => {
-      try {
-            var topicData = req.body;
-            // const uniqueTopicID = shortid.generate();
-            // topicData = {
-            //   ...topicData,
-            //   topic_id: uniqueTopicID
-            // }
-            const topic = new Topic(topicData);
-            await topic.save()
-            res.status(201).json({
-                  success: true,
-                  message: 'Topic is set successfully',
-            });
+  try {
+        var topicData = req.body;
+        const topic = new Topic(topicData);
+        await topic.save()
+        res.status(201).json({
+              success: true,
+              message: 'Topic is set successfully',
+        });
 
-          } catch (error) {
-            res.status(400).send({ error: error.message });
-          }
+      } catch (error) {
+        res.status(400).send({ error: error.message });
+      }
 })
 
 router.get('/getTopics/:institute_id', async (req, res) => {
@@ -43,11 +38,27 @@ router.get('/getTopics/:institute_id', async (req, res) => {
   }
 });
 
+router.get('/getSubTopics', async (req, res) => {
+  try {
+    const institute_id = req.query.institute_id;
+    const topic_name = req.query.topic_name;
+    const topic = await Topic.findOne({
+      institute_id: institute_id,
+      topic_name: topic_name
+    });
+
+    const subTopics = topic ? topic.sub_topics : [];
+    res.json(subTopics);
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    res.status(500).send('Error fetching records');
+  }
+});
+
+
 router.get('/getAllTopics', async(req,res) => {
   try {
         const topics = await Topic.find();
-
-        // Send the records as JSON
         res.json(topics);
       } catch (error) {
         console.error('Error fetching records:', error);
@@ -56,11 +67,9 @@ router.get('/getAllTopics', async(req,res) => {
 });
 
 router.get('/getTopics', async(req,res) => {
-      try {
-          const institute_id = req.query.institute_id
-            const topics = await Topic.find({ institute_id});
-
-    // Send the records as JSON
+  try {
+    const institute_id = req.query.institute_id
+    const topics = await Topic.find({ institute_id});
     res.json(topics);
   } catch (error) {
     console.error('Error fetching records:', error);
@@ -69,12 +78,12 @@ router.get('/getTopics', async(req,res) => {
 });
 
 
-router.put('/:topicId', async (req, res) => {
+router.put('/:topicName', async (req, res) => {
       try {
-          const topicId = req.params.topicId;
+          const topic_name = req.params.topicName;
           const updateData = req.body;
 
-          const updatedTopic = await Topic.findByIdAndUpdate(topicId, updateData, {
+          const updatedTopic = await Topic.findByIdAndUpdate(topic_name, updateData, {
               new: true,  // Returns the updated document
               runValidators: true  // Ensures new data respects schema validations
           });
@@ -89,11 +98,11 @@ router.put('/:topicId', async (req, res) => {
       }
   });
 
-  router.delete('/:topicId', async (req, res) => {
+  router.delete('/:topicName', async (req, res) => {
       try {
-            const topicId = req.params.topicId;
+            const topic_name = req.params.topicName;
 
-          const deletedTopic = await Topic.findByIdAndDelete(topicId);
+          const deletedTopic = await Topic.findByIdAndDelete(topic_name);
 
           if (!deletedTopic) {
               return res.status(404).json({ message: 'No Topic found with the given ID' });
