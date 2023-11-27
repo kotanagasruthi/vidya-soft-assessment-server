@@ -4,7 +4,10 @@ const router = express.Router();
 const Topic = require('../models/topics');
 const shortid = require('shortid');
 const cors = require('cors');
-router.use(cors());
+router.use(cors({
+  origin: 'http://localhost:8080', // Replace with the exact URL of your Vue.js frontend
+  credentials: true
+}));
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
@@ -76,6 +79,37 @@ router.get('/getTopics', async(req,res) => {
     res.status(500).send('Error fetching records');
   }
 });
+
+router.post('/setSubTopic', async (req,res) => {
+  const { topic_name, subtopic_name, subtopic_description, institute_id } = req.body;
+  console.log('subtopic name', subtopic_name)
+  console.log('subtopic desc', subtopic_description)
+
+  try {
+    // Find the topic and update it
+    const updatedTopic = await Topic.findOneAndUpdate(
+      { topic_name: topic_name, institute_id: institute_id },
+      {
+        $push: {
+          sub_topics: {
+            subtopic_name: subtopic_name,
+            subtopic_description: subtopic_description
+          }
+        }
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (updatedTopic) {
+      res.json(updatedTopic);
+    } else {
+      res.status(404).send('Topic not found');
+    }
+  } catch (error) {
+    console.error('Error adding subtopic:', error);
+    res.status(500).send('Error adding subtopic');
+  }
+})
 
 
 router.put('/:topicName', async (req, res) => {

@@ -7,7 +7,10 @@ const User = require('../models/users');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 const cors = require('cors');
-router.use(cors());
+router.use(cors({
+  origin: 'http://localhost:8080', // Replace with the exact URL of your Vue.js frontend
+  credentials: true
+}));
 
 router.post('/setInstitute', async (req, res) => {
       try {

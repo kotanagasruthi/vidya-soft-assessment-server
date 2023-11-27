@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const subTopicSchema = new mongoose.Schema({
     subtopic_name:String,
-    subtopic_discription:String
+    subtopic_description:String
 });
 
 const TopicSchema = new mongoose.Schema({

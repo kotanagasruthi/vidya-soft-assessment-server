@@ -11,7 +11,10 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
-router.use(cors());
+router.use(cors({
+      origin: 'http://localhost:8080', // Replace with the exact URL of your Vue.js frontend
+      credentials: true
+    }));
 
 router.get('/publish', async (req, res) => {
 

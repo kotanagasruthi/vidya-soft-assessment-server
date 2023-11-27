@@ -15,7 +15,7 @@ const questionSchema = new mongoose.Schema({
 
 const subTopicSchema = new mongoose.Schema({
       subtopic_name: String,
-      subtopic_discription: String,
+      subtopic_description: String,
       questions: [questionSchema]
 });
 

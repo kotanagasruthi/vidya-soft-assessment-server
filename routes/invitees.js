@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Invitee = require('../models/invitee');
 const cors = require('cors');
-router.use(cors());
+router.use(cors({
+  origin: 'http://localhost:8080', // Replace with the exact URL of your Vue.js frontend
+  credentials: true
+}));
 
 
 // Add a new invitee

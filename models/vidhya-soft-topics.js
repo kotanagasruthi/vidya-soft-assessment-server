@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const vidyaSubTopicsSchema = new Schema({
     subtopic_name:String,
-    subtopic_discription:String
+    subtopic_description:String
 })
 const vidyaSoftTopicSchema = new Schema({
     topic_name: String,

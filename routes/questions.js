@@ -4,7 +4,10 @@ const router = express.Router();
 const Question = require('../models/questions');
 const shortid = require('shortid');
 const cors = require('cors');
-router.use(cors());
+router.use(cors({
+  origin: 'http://localhost:8080', // Replace with the exact URL of your Vue.js frontend
+  credentials: true
+}));
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
@@ -45,7 +48,8 @@ router.get('/getAllQuestions', async(req,res) => {
 router.get('/getQuestions', async(req,res) => {
       try {
             const topic_name = req.query.topic_name
-            const questions = await Question.find({ topic_name }); // Fetch all records
+            const subtopic_name = req.query.subtopic_name
+            const questions = await Question.find({ topic_name, subtopic_name}); // Fetch all records
 
             // Send the records as JSON
             res.json(questions);
