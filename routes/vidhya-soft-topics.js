@@ -7,12 +7,9 @@ const cors = require('cors');
 // Enable CORS for all routes
 router.use(cors());
 
-// Use body-parser middleware
-router.use(bodyParser.json());
-
 
 // Create a new topic
-router.post('/topics', async (req, res) => {
+router.post('/setTopic', async (req, res) => {
     try {
       const newTopic = new Topic(req.body);
       const savedTopic = await newTopic.save();
@@ -21,7 +18,7 @@ router.post('/topics', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-  
+
   // Get all topics
   router.get('/topics', async (req, res) => {
     try {
@@ -31,7 +28,7 @@ router.post('/topics', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-  
+
   // Get a specific topic by ID
   router.get('/topics/:id', async (req, res) => {
     try {
@@ -41,7 +38,7 @@ router.post('/topics', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-  
+
   // Update a topic by ID
   router.put('/topics/:id', async (req, res) => {
     try {
@@ -51,7 +48,7 @@ router.post('/topics', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-  
+
   // Delete a topic by ID
   router.delete('/topics/:id', async (req, res) => {
     try {
@@ -61,5 +58,5 @@ router.post('/topics', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-  
+
   module.exports = router;
