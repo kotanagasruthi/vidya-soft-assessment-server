@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser'); // Import body-parser
 const Question = require('../models/vidhya-soft-questions'); // Update the path accordingly
+const shortid = require('shortid');
 const cors = require('cors');
 
 // Enable CORS for all routes
@@ -13,7 +14,13 @@ router.use(bodyParser.json());
 // Create a new question
 router.post('/questions', async (req, res) => {
   try {
-    const newQuestion = new Question(req.body);
+    var questionData = req.body;
+    const uniqueQuestionID = shortid.generate();
+    questionData = {
+      ...questionData,
+      question_id: uniqueQuestionID
+    }
+    const newQuestion = new Question(questionData);
     const savedQuestion = await newQuestion.save();
     res.json(savedQuestion);
   } catch (error) {
