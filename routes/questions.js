@@ -59,6 +59,41 @@ router.get('/getQuestions', async(req,res) => {
           }
 });
 
+router.get('/getSubTopicsQuestions', async (req, res) => {
+  try {
+    const topicName = req.query.topic_name;
+    console.log('topic name', topicName)
+
+    // Aggregation pipeline
+    const questionsBySubtopic = await Question.aggregate([
+      // Match documents with the provided topic_name
+      { $match: { topic_name: topicName } },
+
+      // Group questions by subtopic_name
+      {
+        $group: {
+          _id: "$subtopic_name", // Group by subtopic_name
+          questions: { $push: "$$ROOT" } // Push all questions in this subtopic into an array
+        }
+      },
+
+      // Project to format the output
+      {
+        $project: {
+          _id: 0, // Suppress the _id field
+          subtopic_name: "$_id", // Include the subtopic name
+          questions: 1 // Include the array of questions
+        }
+      }
+    ]);
+
+    // Return the result
+    res.json(questionsBySubtopic);
+  } catch (error) {
+    res.status(500).send({ message: "Server error", error: error.message });
+  }
+});
+
 router.put('/:questionId', async (req, res) => {
       try {
           const questionId = req.params.questionId;
