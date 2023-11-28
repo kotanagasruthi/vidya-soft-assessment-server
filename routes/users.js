@@ -6,7 +6,11 @@ const shortid = require('shortid');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 const cors = require('cors');
-router.use(cors());
+router.use(cors({
+  origin: 'http://localhost:8080', // Replace with the exact URL of your Vue.js frontend
+  credentials: true
+}));
+
 
 const User = require('../models/users');
 
@@ -70,48 +74,61 @@ router.get('/getUsers/:institute_id', async (req, res) => {
   });
 
 router.post('/login', async (req, res) => {
-      try {
-        const { instituteID, email, password } = req.body;
+  try {
+      const { instituteID, email, password } = req.body;
 
-        if (!instituteID || !password || !email) {
-          return res.status(400).send({ message: 'Both institute_id and password are required.' });
-        }
-
-        const user = await User.findOne({ institute_id:instituteID , email, password});
-        if (!user) {
-          return res.status(401).send({ message: 'Please Check Your credentials.' });
-        }
-
-        const isPasswordValid = password === user.password;
-        if (!isPasswordValid) {
-          return res.status(401).send({ message: 'Please Check Your credentials.' });
-        }
-
-        req.session.userId = user.user_id;
-        // If login is successful, send a success response. You can also generate a token or set a session here.
-        return res.status(200).send({ message: 'Login successful.', user: user });
-
-      } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).send({ message: 'Server error' });
+      if (!instituteID || !password || !email) {
+        return res.status(400).send({ message: 'Both institute_id and password are required.' });
       }
-    });
 
-    router.post('/logout', (req, res) => {
-      req.session.destroy(); // destroy the session
-      res.send('Logged out');
-    });
-
-    router.get('/session', (req, res) => {
-      if (req.session.userId) {
-        res.send({ loggedIn: true, userId: req.session });
-      } else {
-        res.send({ loggedIn: false });
+      const user = await User.findOne({ institute_id:instituteID , email, password});
+      if (!user) {
+        return res.status(401).send({ message: 'Please Check Your credentials.' });
       }
-    });
-    // ... (your existing code)
 
-// Define a route to delete a user by ID
+      const isPasswordValid = password === user.password;
+      if (!isPasswordValid) {
+        return res.status(401).send({ message: 'Please Check Your credentials.' });
+      }
+
+      req.session.userId = user.user_id;
+      // If login is successful, send a success response. You can also generate a token or set a session here.
+      return res.status(200).send({ message: 'Login successful.', user: user });
+
+    } catch (error) {
+      console.error('Error during login:', error);
+      res.status(500).send({ message: 'Server error' });
+    }
+});
+
+router.get('/current-user', async(req, res) => {
+  try {
+    if (req.session.userId) {
+      // Assuming you have a method to find a user by ID
+      const user = await User.findOne({user_id: req.session.userId})
+      res.json({ user: user });
+    } else {
+      res.status(401).send('No active session');
+    }
+  } catch(error) {
+    console.error('Error during login:', error);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+
+router.post('/logout', (req, res) => {
+  req.session.destroy(); // destroy the session
+  res.send('Logged out');
+});
+
+router.get('/session', (req, res) => {
+  if (req.session.userId) {
+    res.send({ loggedIn: true, userId: req.session });
+  } else {
+    res.send({ loggedIn: false });
+  }
+});
 router.delete('/deleteUser/:_id', async (req, res) => {
   try {
     const userId = req.params._id;

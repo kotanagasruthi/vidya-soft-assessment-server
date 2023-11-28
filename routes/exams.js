@@ -5,7 +5,10 @@ const Exam = require('../models/exams');
 const shortid = require('shortid');
 const cors = require('cors');
 const { route } = require('./users');
-router.use(cors());
+router.use(cors({
+  origin: 'http://localhost:8080', // Replace with the exact URL of your Vue.js frontend
+  credentials: true
+}));
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());

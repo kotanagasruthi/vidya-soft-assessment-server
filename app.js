@@ -7,23 +7,16 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const app = express();
 
-app.use(session({
-  secret: 'vidya_soft_secret_key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-    httpOnly: true
-  }
-  // store: MongoStore.create({
-  //     client: mongoose.connection.getClient()
-  // })
-}));
 
-app.use((req, res, next) => {
-  // console.log('Session data:', req.session);
-  next();
-});
+app.use(session({
+  secret: 'vidya_soft_secret_key', // A secret key for signing the session ID cookie
+  resave: false, // Don't save the session if unmodified
+  saveUninitialized: false, // Don't create a session until something is stored
+  cookie: {
+    httpOnly: true, // Makes the cookie inaccessible to client-side scripts, enhancing security
+    maxAge: 1000 * 60 * 60 * 24 // Sets cookie expiration to one day
+  }
+}));
 
 
 const userRoutes = require('./routes/users');
@@ -86,14 +79,6 @@ async function connectToDatabase() {
     });
 
     console.log('Connected to MongoDB successfully');
-    // const connection2 = await mongoose.createConnection(mongoURI2, {
-    //   useNewUrlParser: true,
-    //   useUnifiedTopology: true,
-    // });
-    // console.log('Connected to second MongoDB successfully');
-    // module.exports = {
-    //   connection2
-    // };
     return { connection1, connection3 };
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
