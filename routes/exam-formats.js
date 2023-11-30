@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const router = express.Router();
 const ExamFormat = require('../models/exam-formats');
+const Topic = require('../models/topics');
 const CommonExamFormat = require('../models/common-exam-formats');
 const shortid = require('shortid');
 const cors = require('cors');
@@ -99,7 +100,38 @@ router.post('/importExamFormats', async (req, res) => {
       examFormatId: { $in: examFormatIds.map(id => id.toString()) }
     });
 
-    // Prepare the data for exam-formats
+    const topicNames = commonExamFormats.reduce((acc, format) => {
+      format.topics.forEach(topic => {
+        acc.add(topic.topic_name); // Add the topic name to the Set
+      });
+      return acc;
+    }, new Set());
+
+    // Check which topics are already present for the institute
+    const existingTopics = await Topic.find({
+      topic_name: { $in: Array.from(topicNames) },
+      institute_id: instituteId
+    });
+
+    // Create a set of existing topic names for the institute
+    const existingTopicNames = new Set(existingTopics.map(topic => topic.topic_name));
+
+    // Prepare the topics to be inserted
+    const topicsToInsert = commonExamFormats
+      .flatMap(format => format.topics)
+      .filter(topic => !existingTopicNames.has(topic.topic_name))
+      .map(topic => ({
+        institute_id: instituteId,
+        topic_name: topic.topic_name,
+        description: topic.description, // Include description here
+        sub_topics: []
+      }));
+
+    // Insert unique topics into Topic collection
+    if (topicsToInsert.length > 0) {
+      await Topic.insertMany(topicsToInsert);
+    }
+
     const examFormatsToInsert = commonExamFormats.map(format => {
         return { ...format.toObject(), instituteId: instituteId };
     });
@@ -107,11 +139,13 @@ router.post('/importExamFormats', async (req, res) => {
     // Insert the data into exam-formats
     await ExamFormat.insertMany(examFormatsToInsert);
 
-    res.status(200).json({ message: 'Exam formats copied successfully' });
+    res.status(200).json({ message: 'Exam formats and topics copied successfully' });
   } catch (error) {
-      res.status(500).json({ message: 'Error in copying exam formats', error: error });
+    console.error(error);
+    res.status(500).json({ message: 'Error in copying exam formats and topics', error: error });
   }
-})
+});
+
 
 router.get('/getAllInstituteExamFormats', async (req, res) => {
   try {
