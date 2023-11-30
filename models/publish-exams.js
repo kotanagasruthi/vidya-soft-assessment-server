@@ -32,13 +32,19 @@ const destinationExamSchema = new mongoose.Schema({
 
 const DestinationExam = destinationConnection.model('Exam', destinationExamSchema);
 
+// Sub Topics Model
+const destinationSubTopicsSchem = new mongoose.Schema({
+      subtopic_name: String
+})
+
 // Topics Model
 const destinationTopicSchema = new mongoose.Schema({
       exam_id: String,
       topic_name: String,
       description: String,
       marks: Number,
-      no_of_questions: Number
+      no_of_questions: Number,
+      sub_topics: [destinationSubTopicsSchem]
 });
 
 const DestinationTopic = destinationConnection.model('Topic', destinationTopicSchema);
@@ -54,8 +60,10 @@ const destinationQuestionSchema = new mongoose.Schema({
       options: [String],
       correct_answer: String,
       difficulty_level: String,
-      marks: Number
+      marks: Number,
+      tags: [String]
 });
+
 
 const DestinationQuestion = destinationConnection.model('Question', destinationQuestionSchema);
 
