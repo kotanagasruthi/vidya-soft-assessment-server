@@ -30,6 +30,7 @@ const commonExamFormatRoutes = require('./routes/common-exam-formats');
 const publishExamRoutes = require('./routes/publish-exam');
 const vidhyaSoftTopicRoutes = require('./routes/vidhya-soft-topics');
 const vidhyaSoftQuestionsRoutes = require('./routes/vidhya-soft-questions');
+const impVidhyaSoftTopicsRoutes = require('./routes/import-vidhyasoft-topics');
 
 app.use(bodyParser.json());
 app.use('/users', userRoutes);
@@ -41,8 +42,9 @@ app.use('/invitees', inviteesRoute);
 app.use('/exam-format', examFormatRoutes);
 app.use('/common-exam-formats', commonExamFormatRoutes);
 app.use('/publish-exam', publishExamRoutes);
-app.use('/vidhyasofttopics', vidhyaSoftTopicRoutes);
-app.use('/vidhyasoftquestions', vidhyaSoftQuestionsRoutes);
+app.use('/vidhya-soft-topics', vidhyaSoftTopicRoutes);
+app.use('/vidhya-soft-questions', vidhyaSoftQuestionsRoutes);
+app.use('/import-vidhyasoft-subtopics', impVidhyaSoftTopicsRoutes);
 
 const port = 3000;
 
