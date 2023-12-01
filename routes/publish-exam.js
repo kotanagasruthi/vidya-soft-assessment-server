@@ -22,12 +22,16 @@ router.get('/publish', async (req, res) => {
             const exam_id = req.query.exam_id
             // Fetch data from the source database
             const exams = await SourceExam.find({ exam_id });
-
+            let exam_name = exams[0].exam_name
             let candidates = exams[0].invitees;
             let topics = exams[0].topics;
             let questions = topics.reduce((acc, topic) => {
-                  return acc.concat(topic.questions);
-              }, []);
+                  let subTopicQuestions = topic.sub_topics.reduce((subAcc, subTopic) => {
+                        return subAcc.concat(subTopic.questions);
+                  }, []);
+                  return acc.concat(subTopicQuestions);
+            }, []);
+
 
             const finalExamRecord = {
                   institute_id: exams[0].institute_id,
@@ -57,7 +61,8 @@ router.get('/publish', async (req, res) => {
                   topic_name: topic.topic_name,
                   description: topic.description,
                   marks: topic.marks,
-                  no_of_questions: topic.no_of_questions
+                  no_of_questions: topic.no_of_questions,
+                  sub_topics: topic.sub_topics
             }));
 
 
@@ -71,6 +76,7 @@ router.get('/publish', async (req, res) => {
 
             const destinationQuestions = questions.map(question => ({
                   topic_name: question.topic_name,
+                  subtopic_name: question.subtopic_name,
                   question_id: question.question_id,
                   question_text: question.question_text,
                   question_type: question.question_type,
@@ -78,7 +84,8 @@ router.get('/publish', async (req, res) => {
                   correct_answer: question.correct_answer,
                   difficulty_level: question.difficulty_level,
                   exam_id: exam_id,
-                  marks: 4
+                  marks: 1,
+                  tags: question.tags
             }));
 
 
@@ -122,7 +129,7 @@ router.get('/publish', async (req, res) => {
                 let mailOptions = {
                   from: 'nagasruthikota@gmail.com',
                   to: emailString,
-                  subject: 'Your Exam Link',
+                  subject: `${exam_name} Exam Link`,
                   text: `Here's your unique exam link: ${examUrl}`
                 };
 

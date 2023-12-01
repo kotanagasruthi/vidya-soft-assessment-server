@@ -112,48 +112,49 @@ router.post('/setSubTopic', async (req,res) => {
 })
 
 
-router.put('/:topicName', async (req, res) => {
-      try {
-          const topic_name = req.params.topicName;
-          const updateData = req.body;
+// router.put('/:topicName', async (req, res) => {
+//       try {
+//           const topic_name = req.params.topicName;
+//           const updateData = req.body;
 
-          const updatedTopic = await Topic.findByIdAndUpdate(topic_name, updateData, {
-              new: true,  // Returns the updated document
-              runValidators: true  // Ensures new data respects schema validations
-          });
+//           const updatedTopic = await Topic.findByIdAndUpdate(topic_name, updateData, {
+//               new: true,  // Returns the updated document
+//               runValidators: true  // Ensures new data respects schema validations
+//           });
 
-          if (!updatedTopic) {
-              return res.status(404).json({ message: 'No topic found with the given ID' });
-          }
+//           if (!updatedTopic) {
+//               return res.status(404).json({ message: 'No topic found with the given ID' });
+//           }
 
-          res.json(updatedTopic);
-      } catch (error) {
-          res.status(500).json({ message: 'Server error', error: error.message });
-      }
-  });
+//           res.json(updatedTopic);
+//       } catch (error) {
+//           res.status(500).json({ message: 'Server error', error: error.message });
+//       }
+//   });
 
-  router.delete('/:topicName', async (req, res) => {
-      try {
-            const topic_name = req.params.topicName;
+//   router.delete('/:topicName', async (req, res) => {
+//       try {
+//             const topic_name = req.params.topicName;
 
-          const deletedTopic = await Topic.findByIdAndDelete(topic_name);
+//           const deletedTopic = await Topic.findByIdAndDelete(topic_name);
 
-          if (!deletedTopic) {
-              return res.status(404).json({ message: 'No Topic found with the given ID' });
-          }
+//           if (!deletedTopic) {
+//               return res.status(404).json({ message: 'No Topic found with the given ID' });
+//           }
 
-          res.json({ message: 'Topic deleted successfully', deletedTopic });
-      } catch (error) {
-          res.status(500).json({ message: 'Server error', error: error.message });
-      }
-  });
+//           res.json({ message: 'Topic deleted successfully', deletedTopic });
+//       } catch (error) {
+//           res.status(500).json({ message: 'Server error', error: error.message });
+//       }
+//   });
 
   router.delete('/deleteAllTopics', async (req, res) => {
     try {
-      await Topic.deleteMany({});
-      res.status(200).send('All Topics deleted successfully.');
+      // This will remove all documents from the 'topics' collection
+      const result = await Topic.deleteMany({});
+      res.send({ message: `${result.deletedCount} topics have been deleted.` });
     } catch (error) {
-      res.status(500).send('Server error.');
+      res.status(500).send({ message: "Server error", error: error.message });
     }
   });
 module.exports = router;
