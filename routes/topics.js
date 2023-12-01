@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const router = express.Router();
 const Topic = require('../models/topics');
+const CommonTopic =  require('../models/vidhya-soft-topics.js');
 const shortid = require('shortid');
 const cors = require('cors');
 router.use(cors({
@@ -111,6 +112,43 @@ router.post('/setSubTopic', async (req,res) => {
   }
 })
 
+router.post('/importSubTopics', async (req,res) => {
+  // Destructure the topic object to get topic_name and sub_topics array
+  try {
+    const { topic_name, sub_topics, institute_id } = req.body;
+
+    // Loop through sub_topics array and fetch details from common-topics
+    for (const subTopicName of sub_topics) {
+      const commonTopic = await CommonTopic.findOne({
+        topic_name: topic_name,
+        'sub_topics.subtopic_name': subTopicName
+      });
+
+      // Extract the subtopic details
+      const subtopicDetails = commonTopic?.sub_topics.find(st => st.subtopic_name === subTopicName);
+
+      if (subtopicDetails) {
+
+        // Check if the topic already exists
+        let topic = await Topic.findOne({ institute_id, topic_name });
+
+          // Topic exists, update it by adding the new subtopic
+          const subtopicExists = topic.sub_topics.some(sub => sub.subtopic_name === subTopicName);
+          if (!subtopicExists) {
+            topic.sub_topics.push({
+              subtopic_name: subTopicName,
+              subtopic_description: subtopicDetails.subtopic_description
+            });
+            console.log('topic', topic)
+            await topic.save();
+          }
+      }
+    }
+  } catch (error) {
+    console.log('API failed:', error);
+    res.status(500).send({ message: 'Internal Server Error', error: error.message });
+  }
+})
 
 // router.put('/:topicName', async (req, res) => {
 //       try {

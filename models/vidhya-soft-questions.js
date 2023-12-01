@@ -9,6 +9,7 @@ const vidyaSoftTopicSchema = new Schema({
     options: [String],
     correct_answer: String,
     difficulty_level: String,
+    tags: [String],
     topic_name: String,
     subtopic_name: String
 });
