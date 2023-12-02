@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { connection3 } = require('../database')
 
 const commonQuestionSchema = new mongoose.Schema({
       topic_name: String,
@@ -43,6 +44,6 @@ const commonExamSchema = new mongoose.Schema({
   invitees: [commonInviteeSchema]
 });
 
-const CommonExamFormat = mongoose.model('common_exam_formats', commonExamSchema);
+const CommonExamFormat = connection3.model('common_exam_formats', commonExamSchema);
 
 module.exports = CommonExamFormat;
