@@ -133,7 +133,9 @@ router.post('/importExamFormats', async (req, res) => {
     }
 
     const examFormatsToInsert = commonExamFormats.map(format => {
-        return { ...format.toObject(), instituteId: instituteId };
+      const formatObj = format.toObject();
+      delete formatObj._id;
+      return { ...formatObj, instituteId: instituteId };
     });
 
     // Insert the data into exam-formats

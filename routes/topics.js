@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 const Topic = require('../models/topics');
 const CommonTopic =  require('../models/vidhya-soft-topics.js');
+const CommonQuestions = require('../models/vidhya-soft-questions.js');
+const Question = require('../models/questions.js');
 const shortid = require('shortid');
 const cors = require('cors');
 router.use(cors({
@@ -141,6 +143,13 @@ router.post('/importSubTopics', async (req,res) => {
             });
             console.log('topic', topic)
             await topic.save();
+          }
+          const relatedQuestions = await CommonQuestions.find({
+            topic_name: topic_name,
+            subtopic_name: subTopicName
+          });
+          if (relatedQuestions.length > 0) {
+            await Question.insertMany(relatedQuestions)
           }
       }
     }
