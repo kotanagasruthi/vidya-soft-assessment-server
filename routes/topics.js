@@ -149,7 +149,14 @@ router.post('/importSubTopics', async (req,res) => {
             subtopic_name: subTopicName
           });
           if (relatedQuestions.length > 0) {
-            await Question.insertMany(relatedQuestions)
+            await Question.insertMany(relatedQuestions.map(question => {
+              const questionObj = question.toObject();
+              delete questionObj._id;
+              return {
+                ...questionObj,
+                institute_id: institute_id
+              };
+            }));
           }
       }
     }
