@@ -160,6 +160,7 @@ router.post('/importSubTopics', async (req,res) => {
           }
       }
     }
+    res.status(200).json({ message: 'Subtopics and related questions imported successfully'})
   } catch (error) {
     console.log('API failed:', error);
     res.status(500).send({ message: 'Internal Server Error', error: error.message });
