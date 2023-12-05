@@ -6,7 +6,8 @@ const destinationCandidateSchema = new mongoose.Schema({
     exam_id: String,
     firstName: String,
     lastName: String,
-    email: String
+    email: String,
+    otp:String
 });
 
 const DestinationCandidate = destinationConnection.model('Candidate', destinationCandidateSchema);
