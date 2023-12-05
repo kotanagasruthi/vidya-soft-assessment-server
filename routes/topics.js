@@ -149,10 +149,18 @@ router.post('/importSubTopics', async (req,res) => {
             subtopic_name: subTopicName
           });
           if (relatedQuestions.length > 0) {
-            await Question.insertMany(relatedQuestions)
+            await Question.insertMany(relatedQuestions.map(question => {
+              const questionObj = question.toObject();
+              delete questionObj._id;
+              return {
+                ...questionObj,
+                institute_id: institute_id
+              };
+            }));
           }
       }
     }
+    res.status(200).json({ message: 'Subtopics and related questions imported successfully'})
   } catch (error) {
     console.log('API failed:', error);
     res.status(500).send({ message: 'Internal Server Error', error: error.message });
