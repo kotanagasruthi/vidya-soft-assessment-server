@@ -42,7 +42,7 @@ router.post('/setInstitute', async (req, res) => {
               });
             })
             .catch(err => {
-              console.error('Error saving user:', err);
+              res.status(500).send('Error saving user:');
             });
         });
 
@@ -71,7 +71,6 @@ router.post('/setInstitute', async (req, res) => {
 
         res.status(200).json({ message: 'Institute deleted successfully' });
       } catch (error) {
-        console.error('Error deleting institute:', error);
         res.status(500).send('Error deleting institute');
       }
     });
@@ -83,7 +82,6 @@ router.post('/setInstitute', async (req, res) => {
         // Send the records as JSON
         x = res.json(institutes);
       } catch (error) {
-        console.error('Error fetching records:', error);
         res.status(500).send('Error fetching records');
       }
     });
@@ -98,7 +96,6 @@ router.post('/setInstitute', async (req, res) => {
         // Send the found record as JSON
         res.json(institute);
       } catch (error) {
-        console.error('Error fetching the record:', error);
         res.status(500).send('Error fetching the record');
       }
     });
@@ -110,7 +107,6 @@ router.post('/setInstitute', async (req, res) => {
 
         res.status(200).json({ message: 'All institutes deleted successfully' });
       } catch (error) {
-        console.error('Error deleting all institutes:', error);
         res.status(500).send('Error deleting all institutes');
       }
     });

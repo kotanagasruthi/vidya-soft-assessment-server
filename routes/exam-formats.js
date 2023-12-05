@@ -143,7 +143,6 @@ router.post('/importExamFormats', async (req, res) => {
 
     res.status(200).json({ message: 'Exam formats and topics copied successfully' });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: 'Error in copying exam formats and topics', error: error });
   }
 });

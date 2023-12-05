@@ -40,7 +40,6 @@ router.get('/getAllQuestions', async(req,res) => {
         // Send the records as JSON
         res.json(questions);
       } catch (error) {
-        console.error('Error fetching records:', error);
         res.status(500).send('Error fetching records');
       }
 });
@@ -49,12 +48,12 @@ router.get('/getQuestions', async(req,res) => {
       try {
             const topic_name = req.query.topic_name
             const subtopic_name = req.query.subtopic_name
-            const questions = await Question.find({ topic_name, subtopic_name}); // Fetch all records
+            const institute_id = req.query.institute_id
+            const questions = await Question.find({ topic_name, subtopic_name, institute_id}); // Fetch all records
 
             // Send the records as JSON
             res.json(questions);
           } catch (error) {
-            console.error('Error fetching records:', error);
             res.status(500).send('Error fetching records');
           }
 });
@@ -62,12 +61,17 @@ router.get('/getQuestions', async(req,res) => {
 router.get('/getSubTopicsQuestions', async (req, res) => {
   try {
     const topicName = req.query.topic_name;
-    console.log('topic name', topicName)
+    const instituteId = req.query.institute_id; // Renamed for JavaScript naming convention
 
     // Aggregation pipeline
     const questionsBySubtopic = await Question.aggregate([
-      // Match documents with the provided topic_name
-      { $match: { topic_name: topicName } },
+      // Match documents with the provided topic_name and institute_id
+      {
+        $match: {
+          topic_name: topicName,
+          institute_id: instituteId // Filter by institute_id
+        }
+      },
 
       // Group questions by subtopic_name
       {
@@ -93,6 +97,7 @@ router.get('/getSubTopicsQuestions', async (req, res) => {
     res.status(500).send({ message: "Server error", error: error.message });
   }
 });
+
 
 router.put('/:questionId', async (req, res) => {
       try {

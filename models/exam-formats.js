@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const questionSchema = new mongoose.Schema({
+      institute_id: String,
       topic_name: String,
       subtopic_name: String,
       question_id: String,

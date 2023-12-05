@@ -39,7 +39,6 @@ router.get('/getTopics/:institute_id', async (req, res) => {
     // Send the records as JSON
     res.json(topics);
   } catch (error) {
-    console.error('Error fetching records:', error);
     res.status(500).send('Error fetching records');
   }
 });
@@ -56,7 +55,6 @@ router.get('/getSubTopics', async (req, res) => {
     const subTopics = topic ? topic.sub_topics : [];
     res.json(subTopics);
   } catch (error) {
-    console.error('Error fetching records:', error);
     res.status(500).send('Error fetching records');
   }
 });
@@ -67,7 +65,6 @@ router.get('/getAllTopics', async(req,res) => {
         const topics = await Topic.find();
         res.json(topics);
       } catch (error) {
-        console.error('Error fetching records:', error);
         res.status(500).send('Error fetching records');
       }
 });
@@ -78,15 +75,12 @@ router.get('/getTopics', async(req,res) => {
     const topics = await Topic.find({ institute_id});
     res.json(topics);
   } catch (error) {
-    console.error('Error fetching records:', error);
     res.status(500).send('Error fetching records');
   }
 });
 
 router.post('/setSubTopic', async (req,res) => {
   const { topic_name, subtopic_name, subtopic_description, institute_id } = req.body;
-  console.log('subtopic name', subtopic_name)
-  console.log('subtopic desc', subtopic_description)
 
   try {
     // Find the topic and update it
@@ -109,7 +103,6 @@ router.post('/setSubTopic', async (req,res) => {
       res.status(404).send('Topic not found');
     }
   } catch (error) {
-    console.error('Error adding subtopic:', error);
     res.status(500).send('Error adding subtopic');
   }
 })
@@ -141,7 +134,6 @@ router.post('/importSubTopics', async (req,res) => {
               subtopic_name: subTopicName,
               subtopic_description: subtopicDetails.subtopic_description
             });
-            console.log('topic', topic)
             await topic.save();
           }
           const relatedQuestions = await CommonQuestions.find({
@@ -162,7 +154,6 @@ router.post('/importSubTopics', async (req,res) => {
     }
     res.status(200).json({ message: 'Subtopics and related questions imported successfully'})
   } catch (error) {
-    console.log('API failed:', error);
     res.status(500).send({ message: 'Internal Server Error', error: error.message });
   }
 })

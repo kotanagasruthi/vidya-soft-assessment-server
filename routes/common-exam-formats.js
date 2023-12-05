@@ -48,7 +48,6 @@ router.get('/getAllCommonExamFormats', async(req,res) => {
         // Send the records as JSON
         res.json(examFormats);
       } catch (error) {
-        console.error('Error fetching records:', error);
         res.status(500).send('Error fetching records');
       }
 });
@@ -72,7 +71,6 @@ router.get('/getExamFormat', async(req,res) => {
             // Send the records as JSON
             res.json(examFormat);
           } catch (error) {
-            console.error('Error fetching records:', error);
             res.status(500).send('Error fetching records');
           }
 });

@@ -46,8 +46,6 @@
         // Send the result as JSON response
         res.json(result);
     } catch (error) {
-        console.error('Error fetching topics:', error);
-        // Send an error response if there's an issue
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });

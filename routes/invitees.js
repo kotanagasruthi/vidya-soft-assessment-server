@@ -61,7 +61,6 @@ router.delete('/deleteInvitees', async (req, res) => {
 
     res.status(200).json({ message: 'All invitees deleted successfully' });
   } catch (error) {
-    console.error('Error deleting all invitees:', error);
     res.status(500).send('Error deleting all invitees');
   }
 });

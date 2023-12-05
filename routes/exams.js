@@ -87,6 +87,16 @@ router.get('/getExams', async(req,res) => {
       }
 });
 
+router.get('/getExamDetails', async(req,res) => {
+  try {
+        const exam_id = req.query.exam_id
+        const exam = await Exam.find({ exam_id });
+        res.json(exam[0]);
+      } catch (error) {
+        res.status(500).send('Error fetching records');
+      }
+});
+
 router.delete('/deleteAllExams', async (req, res) => {
       try {
         await Exam.deleteMany({});
