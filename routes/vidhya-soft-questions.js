@@ -20,6 +20,8 @@ router.post('/questions', async (req, res) => {
       ...questionData,
       question_id: uniqueQuestionID
     }
+
+    console.log(questionData)
     const newQuestion = new Question(questionData);
     const savedQuestion = await newQuestion.save();
     res.json(savedQuestion);
