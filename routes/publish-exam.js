@@ -8,6 +8,7 @@ const SourceQuestion = require('../models/questions');
 const SourceUsers = require('../models/users');
 const DestinationSchema = require('../models/publish-exams');
 const nodemailer = require('nodemailer');
+const randomstring = require('randomstring');
 const cors = require('cors');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
@@ -97,13 +98,20 @@ router.get('/publish', async (req, res) => {
                   console.error("Error inserting:", err);
             });
 
-            const destinationCandidates = candidates.map(candidate => ({
+            const destinationCandidates = candidates.map(candidate => {
+                  const otp = randomstring.generate({
+                  length: 6, // Set the desired length of the OTP
+                  charset: 'numeric' // Use numeric characters for OTP
+                  });
+
+                  return {
                   firstName: candidate.firstName,
                   lastName: candidate.lastName,
                   email: candidate.email,
-                  exam_id: exam_id
-            }));
-
+                  exam_id: exam_id,
+                  otp: otp // Add the OTP field to the candidate data
+                  };
+            });
 
             DestinationSchema.DestinationCandidate.insertMany(destinationCandidates)
             .then(res => {
@@ -125,13 +133,16 @@ router.get('/publish', async (req, res) => {
                     pass: 'ozbu oocd cfpi pvye' // Your password
                   }
                 });
-
-                let mailOptions = {
+            console.log(destinationCandidates)
+      
+              destinationCandidates.forEach(candidate => {
+                  let mailOptions = {
                   from: 'nagasruthikota@gmail.com',
-                  to: emailString,
+                  to: candidate.email,
                   subject: `${exam_name} Exam Link`,
-                  text: `Here's your unique exam link: ${examUrl}`
-                };
+                  text: `Here's your unique exam link: ${examUrl}\nYour OTP: ${candidate.otp}`
+                  };
+
 
                 transporter.sendMail(mailOptions, (error, info) => {
                   if (error) {
@@ -140,6 +151,7 @@ router.get('/publish', async (req, res) => {
                     console.log('Email sent:', info.response);
                   }
                 });
+            });
 
             const updatedExam = await SourceExam.findOneAndUpdate(
                   { exam_id },
