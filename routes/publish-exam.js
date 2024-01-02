@@ -6,6 +6,7 @@ const SourceExam = require('../models/exams');
 const SourceTopic = require('../models/topics');
 const SourceQuestion = require('../models/questions');
 const SourceUsers = require('../models/users');
+const Exam = require('../models/exams');
 const DestinationSchema = require('../models/publish-exams');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
@@ -133,7 +134,6 @@ router.get('/publish', async (req, res) => {
                     pass: 'ozbu oocd cfpi pvye' // Your password
                   }
                 });
-            console.log(destinationCandidates)
       
               destinationCandidates.forEach(candidate => {
                   let mailOptions = {
@@ -151,6 +151,9 @@ router.get('/publish', async (req, res) => {
                     console.log('Email sent:', info.response);
                   }
                 });
+                Exam.findOneAndUpdate(
+                  { exam_id: exam_id },
+                  { $set: { "invitees.$[].examKey": candidate.otp}});
             });
 
             const updatedExam = await SourceExam.findOneAndUpdate(
@@ -160,6 +163,11 @@ router.get('/publish', async (req, res) => {
                 );
 
             if (updatedExam) {
+                  let j = await Exam.findOneAndUpdate(
+                        { exam_id: exam_id },
+                        { $set: { "invitees.$[].invitation": "sent" }
+                   });
+                   console.log(j)
                   res.json({ success: true, message: 'Exam Published Successfully!!!' });
               } else {
                   res.status(404).json({ success: false, message: 'Exam not found' });

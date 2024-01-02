@@ -41,11 +41,17 @@ router.post('/setInvitees', async (req,res) => {
     const newInvitees = req.body.invitees
     const updatedExam = await Exam.findOneAndUpdate(
       { exam_id: examId },
-      { invitees: newInvitees },
-      { new: true } // Returns the updated document
+      { $push: { invitees: { $each: newInvitees } } },
+      { new: true }
     );
-      if (updatedExam) {
-        res.json({ success: true, exam: updatedExam });
+    if (updatedExam) {
+      await Exam.findOneAndUpdate(
+        { exam_id: examId },
+        { $set: { "invitees.$[].invitation": "pending" } }
+      );
+    }
+    if (updatedExam) {
+      res.json({ success: true, exam: updatedExam });
     } else {
         res.status(404).json({ success: false, message: 'Exam not found' });
     }

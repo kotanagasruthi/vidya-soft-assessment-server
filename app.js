@@ -200,6 +200,8 @@ app.delete('/deleteDestinationCandidates', async (req, res) => {
 });
 
 
+      
+
 
 app.listen(port, () => {
   console.log(`Express server is running on http://localhost:${port}`);
